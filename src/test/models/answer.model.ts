@@ -7,9 +7,10 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { Question } from './question.model';
+import { CreateAnswerDto } from '../dto/createAnswerDto';
 
 @Table
-export class Answer extends Model {
+export class Answer extends Model<Answer, CreateAnswerDto> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,

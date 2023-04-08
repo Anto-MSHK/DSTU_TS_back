@@ -11,6 +11,10 @@ import {
 import { TestsService } from './test.service';
 import { Test } from './models/test.model';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateTestDto } from './dto/createTestDto';
+import { CreateQuestionDto } from './dto/createQuestionDto';
+import { CreateAnswerDto } from './dto/createAnswerDto';
+import { Question } from './models/question.model';
 
 @ApiTags('tests')
 @Controller('tests')
@@ -20,14 +24,34 @@ export class TestsController {
   @Post()
   @ApiOperation({ summary: 'Создать тест' })
   @ApiResponse({ status: 201, description: 'Тест успешно создан' })
-  create(@Body('name') name: string): Promise<Test> {
-    return this.testsService.create(name);
+  async createTest(@Body() data: CreateTestDto): Promise<Test> {
+    return await this.testsService.createTest(data);
+  }
+
+  @Post('/:testId/add-question')
+  @ApiOperation({ summary: 'Создать тест' })
+  @ApiResponse({ status: 201, description: 'Тест успешно создан' })
+  async createQuestion(
+    @Param('testId') testId: number,
+    @Body() data: CreateQuestionDto,
+  ): Promise<Test> {
+    return await this.testsService.createQuestion(+testId, data);
+  }
+
+  @Post('/:questionId/add-answer')
+  @ApiOperation({ summary: 'Создать тест' })
+  @ApiResponse({ status: 201, description: 'Тест успешно создан' })
+  async createAnswer(
+    @Param('questionId') questionId: number,
+    @Body() data: CreateAnswerDto,
+  ): Promise<Question> {
+    return await this.testsService.createAnswer(+questionId, data);
   }
 
   @Get()
   @ApiOperation({ summary: 'Получить список всех тестов' })
   @ApiResponse({ status: 200, description: 'Список тестов успешно получен' })
-  findAll(): Promise<Test[]> {
+  async findAll(): Promise<Test[]> {
     return this.testsService.findAll();
   }
 
@@ -46,20 +70,16 @@ export class TestsController {
   @ApiOperation({ summary: 'Обновить тест по ID' })
   @ApiResponse({ status: 200, description: 'Тест успешно обновлен' })
   async update(
-    @Param('id') id: string,
-    @Body('name') name: string,
+    @Param('id') id: number,
+    @Body() data: CreateTestDto,
   ): Promise<Test> {
-    const test = await this.testsService.update(+id, name);
-    if (!test) {
-      throw new NotFoundException('Тест не найден');
-    }
-    return test;
+    return await this.testsService.updateTest(+id, data);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить тест по ID' })
   @ApiResponse({ status: 200, description: 'Тест успешно удален' })
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.testsService.remove(+id);
+  async deleteTest(@Param('id') id: number): Promise<void> {
+    await this.testsService.deleteTest(+id);
   }
 }

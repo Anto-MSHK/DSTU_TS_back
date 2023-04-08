@@ -17,6 +17,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManySetAssociationsMixin,
 } from 'sequelize';
+import { CreateQuestionDto } from '../dto/createQuestionDto';
+import { CreateAnswerDto } from '../dto/createAnswerDto';
 
 export enum QuestionType {
   SINGLE = 'single',
@@ -25,7 +27,7 @@ export enum QuestionType {
 }
 
 @Table
-export class Question extends Model {
+export class Question extends Model<Question, CreateQuestionDto> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -58,7 +60,7 @@ export class Question extends Model {
   @HasMany(() => Answer)
   answers: Answer[];
   public getAnswers!: HasManyGetAssociationsMixin<Answer>;
-  public addAnswer!: HasManyAddAssociationMixin<Answer, number>;
+  public addAnswer!: HasManyAddAssociationMixin<CreateAnswerDto, number>;
   public setAnswers!: HasManySetAssociationsMixin<Answer, number>;
   public removeAnswer!: HasManyRemoveAssociationMixin<Answer, number>;
   public createAnswer!: HasManyCreateAssociationMixin<Answer>;

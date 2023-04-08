@@ -39,7 +39,7 @@ export class DirectionController {
     @Param('dirId') dirId: number,
     @Body() way: CreateWayDto,
   ): Promise<Direction> {
-    return await this.directionService.createWay(dirId, way);
+    return await this.directionService.createWay(+dirId, way);
   }
 
   @Post('/:dirId/add-info')
@@ -52,7 +52,7 @@ export class DirectionController {
     @Param('dirId') dirId: number,
     @Body() info: CreateInfoDto,
   ): Promise<Direction> {
-    return await this.directionService.createInfo(dirId, info);
+    return await this.directionService.createInfo(+dirId, info);
   }
 
   @Delete('/del-dir/:dirId')
@@ -72,7 +72,7 @@ export class DirectionController {
     type: Direction,
   })
   async deleteWay(@Param('wayId') wayId: number): Promise<number> {
-    return await this.directionService.deleteWay(wayId);
+    return await this.directionService.deleteWay(+wayId);
   }
 
   @Delete('/del-info/:infoId')
@@ -82,12 +82,12 @@ export class DirectionController {
     type: Direction,
   })
   async deleteInfo(@Param('infoId') infoId: number): Promise<number> {
-    return await this.directionService.deleteInfo(infoId);
+    return await this.directionService.deleteInfo(+infoId);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, description: 'OK', type: Direction })
-  async getById(@Param('id') id: string): Promise<Direction> {
-    return await this.directionService.getById(id);
+  async getById(@Param('id') id: number): Promise<Direction> {
+    return await this.directionService.getById(+id);
   }
 }

@@ -12,7 +12,9 @@ export class DirectionService {
   constructor(
     @InjectModel(Direction)
     private readonly directionModel: typeof Direction,
+    @InjectModel(Way)
     private readonly wayModel: typeof Way,
+    @InjectModel(Info)
     private readonly infoModel: typeof Info,
   ) {}
 
@@ -62,7 +64,7 @@ export class DirectionService {
     return infoId;
   }
 
-  async getById(id: string): Promise<Direction> {
-    return this.directionModel.findByPk(id);
+  async getById(id: number): Promise<Direction> {
+    return await this.directionModel.findByPk(id);
   }
 }
