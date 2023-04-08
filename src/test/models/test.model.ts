@@ -22,6 +22,7 @@ import {
 import { Way } from 'src/direction/models/way.model';
 import { CreateTestDto } from '../dto/createTestDto';
 import { CreateQuestionDto } from '../dto/createQuestionDto';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Table({
   defaultScope: {
@@ -36,17 +37,29 @@ export class Test extends Model<Test, CreateTestDto> {
   })
   id: number;
 
+  @ApiProperty({
+    description: 'имя теста',
+    example: 'Тест на знание IOS',
+  })
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   name: string;
 
+  @ApiProperty({
+    description: 'описнание теста',
+    example: 'Всякие бла бла',
+  })
   @Column({
     type: DataType.TEXT,
   })
   desc: string;
 
+  @ApiProperty({
+    description: 'вопросы теста',
+    type: [Question],
+  })
   @HasMany(() => Question)
   questions: Question[];
   public getQuestions!: HasManyGetAssociationsMixin<Question>;

@@ -8,6 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { Question } from './question.model';
 import { CreateAnswerDto } from '../dto/createAnswerDto';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Table
 export class Answer extends Model<Answer, CreateAnswerDto> {
@@ -18,12 +19,20 @@ export class Answer extends Model<Answer, CreateAnswerDto> {
   })
   id: number;
 
+  @ApiProperty({
+    description: 'текст ответа',
+    example: 'Да, я чел',
+  })
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   text: string;
 
+  @ApiProperty({
+    description: 'это правильный ответ?',
+    example: false,
+  })
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,

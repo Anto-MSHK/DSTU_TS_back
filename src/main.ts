@@ -11,10 +11,9 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
   const options = new DocumentBuilder()
-    .setTitle('User API')
-    .setDescription('The User API description')
+    .setTitle('invst-back')
+    .setDescription('The API description')
     .setVersion('1.0')
-    .addTag('users')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

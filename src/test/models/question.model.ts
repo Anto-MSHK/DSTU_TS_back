@@ -19,6 +19,7 @@ import {
 } from 'sequelize';
 import { CreateQuestionDto } from '../dto/createQuestionDto';
 import { CreateAnswerDto } from '../dto/createAnswerDto';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum QuestionType {
   SINGLE = 'single',
@@ -39,12 +40,22 @@ export class Question extends Model<Question, CreateQuestionDto> {
   })
   id: number;
 
+  @ApiProperty({
+    description: 'текст вопроса',
+    example: 'Ты чел?...',
+  })
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   text: string;
 
+  @ApiProperty({
+    title: 'тип вопроса',
+    description:
+      'single - вопрос с одним вариантом ответа; multiple - вопрос с многими вариантами ответа; fill - ручной ввод',
+    enum: QuestionType,
+  })
   @Column({
     type: DataType.ENUM,
     values: Object.values(QuestionType),
@@ -61,6 +72,10 @@ export class Question extends Model<Question, CreateQuestionDto> {
   @BelongsTo(() => Test)
   test: Test;
 
+  @ApiProperty({
+    description: 'ответы',
+    type: [Answer],
+  })
   @HasMany(() => Answer)
   answers: Answer[];
   public getAnswers!: HasManyGetAssociationsMixin<Answer>;

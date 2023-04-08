@@ -18,7 +18,7 @@ import { CreateUserDTO } from 'src/user/dto/createUser.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({ summary: 'Регистрация/создание пользователя' })
+  @ApiOperation({ summary: 'регистрация/создание пользователя' })
   @ApiResponse({ status: 200, type: ResponseDto })
   @Post('/register')
   async register(@Body() dto: CreateUserDTO, @Response() res) {
@@ -26,7 +26,7 @@ export class AuthController {
     this.setRefreshAndSendAccess(res, result.tokens, result.user);
   }
 
-  @ApiOperation({ summary: 'Логин' })
+  @ApiOperation({ summary: 'логин' })
   @ApiResponse({ status: 200, type: ResponseDto })
   @Post('/login')
   async login(@Body() dto: CreateUserDTO, @Response() res) {

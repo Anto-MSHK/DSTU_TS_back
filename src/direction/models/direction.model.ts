@@ -40,15 +40,21 @@ export class Direction extends Model<Direction, CreateDirectionDto> {
   @Column(DataType.INTEGER)
   id: number;
 
-  @ApiProperty({ description: 'Заголовок направления подготовки' })
+  @ApiProperty({
+    description: 'Заголовок направления подготовки',
+    example: 'Frontend',
+  })
   @Column({ allowNull: false })
   title: string;
 
-  @ApiProperty({ description: 'Описание направления подготовки' })
+  @ApiProperty({
+    description: 'Описание направления подготовки',
+    example: 'Frontend - это круто',
+  })
   @Column({ allowNull: false })
   desc: string;
 
-  @ApiProperty({ description: 'Связанные модели информации' })
+  @ApiProperty({ description: 'Связанные модели информации', type: [Info] })
   @HasMany(() => Info)
   infos: Info[];
   public getInfos!: HasManyGetAssociationsMixin<Info>;
@@ -58,7 +64,7 @@ export class Direction extends Model<Direction, CreateDirectionDto> {
   public createInfo!: HasManyCreateAssociationMixin<Info>;
   public countInfos!: HasManyCountAssociationsMixin;
 
-  @ApiProperty({ description: 'Связанные модели пути' })
+  @ApiProperty({ description: 'Связанные модели пути', type: [Way] })
   @HasMany(() => Way)
   ways: Way[];
   public getWays!: HasManyGetAssociationsMixin<Way>;

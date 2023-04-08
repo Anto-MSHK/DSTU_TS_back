@@ -3,8 +3,8 @@ import { User } from 'src/user/models/user';
 
 export class ResponseDto {
   @ApiProperty({
-    example: { id: 1, mail: 'foo@bar.bar', roles: ['ADMIN'] },
-    description: 'user data',
+    description: 'Данные о пользователе',
+    type: User,
   })
   user: User;
 

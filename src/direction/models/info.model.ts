@@ -18,11 +18,14 @@ export class Info extends Model<Info> {
   @Column(DataType.INTEGER)
   id: number;
 
-  @ApiProperty({ description: 'Название информации' })
+  @ApiProperty({ description: 'название информации', example: 'Зарплата' })
   @Column({ allowNull: false })
   name: string;
 
-  @ApiProperty({ description: 'Описание информации' })
+  @ApiProperty({
+    description: 'описание информации',
+    example: 'ЗП реально бешенный, брат',
+  })
   @Column({ allowNull: false })
   value: string;
 

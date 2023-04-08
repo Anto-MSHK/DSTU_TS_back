@@ -37,15 +37,21 @@ export class Way extends Model<Way, CreateWayDto> {
   @Column(DataType.INTEGER)
   id: number;
 
-  @ApiProperty({ description: 'Заголовок направления подготовки' })
+  @ApiProperty({
+    description: 'названия пути направления подготовки',
+    example: 'React-разработчик',
+  })
   @Column(DataType.TEXT)
   name: string;
 
-  @ApiProperty({ description: 'Описание направления подготовки' })
+  @ApiProperty({
+    description: 'описание пути направления подготовки',
+    example: 'React-разработчик это круто',
+  })
   @Column(DataType.TEXT)
   desc: string;
 
-  @ApiProperty({ description: 'Связанные модели информации' })
+  @ApiProperty({ description: 'Связанные модели информации', type: [Test] })
   @HasMany(() => Test)
   tests: Test[];
   public getTests!: HasManyGetAssociationsMixin<Test>;

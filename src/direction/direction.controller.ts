@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { DirectionService } from './direction.service';
 import { Direction } from './models/direction.model';
 import { CreateDirectionDto } from './dto/createDirectionDto';
@@ -14,15 +14,20 @@ export class DirectionController {
   constructor(private readonly directionService: DirectionService) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'получить все направления подготовки',
+  })
   @ApiResponse({ status: 200, description: 'OK', type: [Direction] })
   async getAll(): Promise<Direction[]> {
     return await this.directionService.getAll();
   }
 
   @Post('/add-dir')
+  @ApiOperation({
+    summary: 'создать напраление подготовки',
+  })
   @ApiResponse({
     status: 201,
-    description: 'создать напраление подготовки',
     type: Direction,
   })
   async create(@Body() direction: CreateDirectionDto): Promise<Direction> {
@@ -30,9 +35,12 @@ export class DirectionController {
   }
 
   @Post('/:dirId/add-way')
+  @ApiOperation({
+    summary: 'создать путь в направлении',
+  })
   @ApiResponse({
     status: 201,
-    description: 'создать путь в направлении',
+
     type: Direction,
   })
   async createWay(
@@ -43,9 +51,11 @@ export class DirectionController {
   }
 
   @Post('/:dirId/add-info')
+  @ApiOperation({
+    summary: 'создать мини информацию в направлении подготовки (виджет)',
+  })
   @ApiResponse({
     status: 201,
-    description: 'создать мини информацию в направлении подготовки (виджет)',
     type: Direction,
   })
   async createInfo(
@@ -55,37 +65,43 @@ export class DirectionController {
     return await this.directionService.createInfo(+dirId, info);
   }
 
+  @ApiOperation({
+    summary: 'удалить напраление подготовки',
+  })
   @Delete('/del-dir/:dirId')
   @ApiResponse({
     status: 201,
-    description: 'удалить напраление подготовки',
-    type: Direction,
   })
   async delete(@Param('dirId') dirId: number): Promise<number> {
     return await this.directionService.deleteDirection(dirId);
   }
 
+  @ApiOperation({
+    summary: 'удалить путь в направлении',
+  })
   @Delete('/del-way/:wayId')
   @ApiResponse({
     status: 201,
-    description: 'удалить путь в направлении',
-    type: Direction,
   })
   async deleteWay(@Param('wayId') wayId: number): Promise<number> {
     return await this.directionService.deleteWay(+wayId);
   }
 
+  @ApiOperation({
+    summary: 'удалить мини информацию в направлении подготовки (виджет)',
+  })
   @Delete('/del-info/:infoId')
   @ApiResponse({
     status: 201,
-    description: 'удалить мини информацию в направлении подготовки (виджет)',
-    type: Direction,
   })
   async deleteInfo(@Param('infoId') infoId: number): Promise<number> {
     return await this.directionService.deleteInfo(+infoId);
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'получить направление подготовки по id',
+  })
   @ApiResponse({ status: 200, description: 'OK', type: Direction })
   async getById(@Param('id') id: number): Promise<Direction> {
     return await this.directionService.getById(+id);

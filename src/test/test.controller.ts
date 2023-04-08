@@ -23,8 +23,8 @@ export class TestsController {
   constructor(private readonly testsService: TestsService) {}
 
   @Post('/:wayId/add-test')
-  @ApiOperation({ summary: 'Создать тест' })
-  @ApiResponse({ status: 201, description: 'Тест успешно создан' })
+  @ApiOperation({ summary: 'cоздать тест' })
+  @ApiResponse({ status: 201, description: 'Тест успешно создан', type: Way })
   async createTest(
     @Param('wayId') wayId: number,
     @Body() data: CreateTestDto,
@@ -33,8 +33,8 @@ export class TestsController {
   }
 
   @Post('/:testId/add-question')
-  @ApiOperation({ summary: 'Создать тест' })
-  @ApiResponse({ status: 201, description: 'Тест успешно создан' })
+  @ApiOperation({ summary: 'cоздать вопрос' })
+  @ApiResponse({ status: 201, description: 'Тест успешно создан', type: Test })
   async createQuestion(
     @Param('testId') testId: number,
     @Body() data: CreateQuestionDto,
@@ -43,8 +43,12 @@ export class TestsController {
   }
 
   @Post('/:questionId/add-answer')
-  @ApiOperation({ summary: 'Создать тест' })
-  @ApiResponse({ status: 201, description: 'Тест успешно создан' })
+  @ApiOperation({ summary: 'создать ответ' })
+  @ApiResponse({
+    status: 201,
+    description: 'Тест успешно создан',
+    type: Question,
+  })
   async createAnswer(
     @Param('questionId') questionId: number,
     @Body() data: CreateAnswerDto,
@@ -53,15 +57,23 @@ export class TestsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Получить список всех тестов' })
-  @ApiResponse({ status: 200, description: 'Список тестов успешно получен' })
+  @ApiOperation({ summary: 'получить список всех тестов' })
+  @ApiResponse({
+    status: 200,
+    description: 'Список тестов успешно получен',
+    type: [Test],
+  })
   async findAll(): Promise<Test[]> {
     return this.testsService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Получить тест по ID' })
-  @ApiResponse({ status: 200, description: 'Тест успешно получен' })
+  @ApiOperation({ summary: 'получить тест по ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Тест успешно получен',
+    type: Test,
+  })
   async findOne(@Param('id') id: string): Promise<Test> {
     const test = await this.testsService.findOne(+id);
     if (!test) {
@@ -71,8 +83,12 @@ export class TestsController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Обновить тест по ID' })
-  @ApiResponse({ status: 200, description: 'Тест успешно обновлен' })
+  @ApiOperation({ summary: 'обновить тест по ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Тест успешно обновлен',
+    type: Test,
+  })
   async update(
     @Param('id') id: number,
     @Body() data: CreateTestDto,
@@ -80,24 +96,26 @@ export class TestsController {
     return await this.testsService.updateTest(+id, data);
   }
 
-  @Delete('/:id/del-test')
-  @ApiOperation({ summary: 'Удалить тест по ID' })
+  @Delete('/:testId/del-test')
+  @ApiOperation({ summary: 'удалить тест по ID' })
   @ApiResponse({ status: 200, description: 'тест успешно удален' })
-  async deleteTest(@Param('id') id: number): Promise<number> {
-    return await this.testsService.deleteTest(+id);
+  async deleteTest(@Param('testId') testId: number): Promise<number> {
+    return await this.testsService.deleteTest(+testId);
   }
 
-  @Delete('/:id/del-question')
-  @ApiOperation({ summary: 'Удалить вопрос по ID' })
+  @Delete('/:questionId/del-question')
+  @ApiOperation({ summary: 'удалить вопрос по ID' })
   @ApiResponse({ status: 200, description: 'вопрос успешно удален' })
-  async deleteQuestion(@Param('id') id: number): Promise<number> {
-    return await this.testsService.deleteQuestion(+id);
+  async deleteQuestion(
+    @Param('questionId') questionId: number,
+  ): Promise<number> {
+    return await this.testsService.deleteQuestion(+questionId);
   }
 
-  @Delete('/:id/del-answer')
-  @ApiOperation({ summary: 'Удалить ответ по ID' })
+  @Delete('/:answerId/del-answer')
+  @ApiOperation({ summary: 'удалить ответ по ID' })
   @ApiResponse({ status: 200, description: 'ответ успешно удален' })
-  async deleteAnswer(@Param('id') id: number): Promise<number> {
-    return await this.testsService.deleteAnswer(+id);
+  async deleteAnswer(@Param('answerId') answerId: number): Promise<number> {
+    return await this.testsService.deleteAnswer(+answerId);
   }
 }
