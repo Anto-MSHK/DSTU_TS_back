@@ -24,8 +24,9 @@ import {
 } from 'sequelize';
 import { Test } from 'src/test/models/test.model';
 import { Direction } from './direction.model';
+import { CreateWayDto } from '../dto/createWayDto';
 @Table
-export class Way extends Model<Way> {
+export class Way extends Model<Way, CreateWayDto> {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)

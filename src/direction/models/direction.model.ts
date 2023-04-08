@@ -21,8 +21,11 @@ import {
   HasOneSetAssociationMixin,
 } from 'sequelize';
 import { Way } from './way.model';
+import { CreateDirectionDto } from '../dto/createDirectionDto';
+import { CreateWayDto } from '../dto/createWayDto';
+import { CreateInfoDto } from '../dto/createInfoDto';
 @Table
-export class Direction extends Model<Direction> {
+export class Direction extends Model<Direction, CreateDirectionDto> {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -40,7 +43,7 @@ export class Direction extends Model<Direction> {
   @HasMany(() => Info)
   info: Info[];
   public getInfos!: HasManyGetAssociationsMixin<Info>;
-  public addInfo!: HasManyAddAssociationMixin<Info, number>;
+  public addInfo!: HasManyAddAssociationMixin<CreateInfoDto, number>;
   public setInfos!: HasManySetAssociationsMixin<Info, number>;
   public removeInfo!: HasManyRemoveAssociationMixin<Info, number>;
   public createInfo!: HasManyCreateAssociationMixin<Info>;
@@ -50,7 +53,7 @@ export class Direction extends Model<Direction> {
   @HasMany(() => Way)
   way: Way[];
   public getWays!: HasManyGetAssociationsMixin<Way>;
-  public addWay!: HasManyAddAssociationMixin<Way, number>;
+  public addWay!: HasManyAddAssociationMixin<CreateWayDto, number>;
   public setWays!: HasManySetAssociationsMixin<Way, number>;
   public removeWay!: HasManyRemoveAssociationMixin<Way, number>;
   public createWay!: HasManyCreateAssociationMixin<Way>;
