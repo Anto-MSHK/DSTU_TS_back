@@ -1,4 +1,12 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { Question } from './question.model';
 import {
   HasManyAddAssociationMixin,
@@ -11,6 +19,7 @@ import {
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
 } from 'sequelize';
+import { Way } from 'src/direction/models/way.model';
 
 @Table
 export class Test extends Model {
@@ -35,4 +44,17 @@ export class Test extends Model {
   public removeQuestion!: HasManyRemoveAssociationMixin<Question, number>;
   public createQuestion!: HasManyCreateAssociationMixin<Question>;
   public countQuestions!: HasManyCountAssociationsMixin;
+
+  @ForeignKey(() => Way)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  wayId: number;
+
+  @BelongsTo(() => Way, {
+    foreignKey: 'wayId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  way: Way;
 }

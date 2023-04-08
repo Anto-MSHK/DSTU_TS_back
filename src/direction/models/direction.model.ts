@@ -20,6 +20,7 @@ import {
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
 } from 'sequelize';
+import { Way } from './way.model';
 @Table
 export class Direction extends Model<Direction> {
   @PrimaryKey
@@ -44,4 +45,14 @@ export class Direction extends Model<Direction> {
   public removeInfo!: HasManyRemoveAssociationMixin<Info, number>;
   public createInfo!: HasManyCreateAssociationMixin<Info>;
   public countInfos!: HasManyCountAssociationsMixin;
+
+  @ApiProperty({ description: 'Связанные модели пути' })
+  @HasMany(() => Way)
+  way: Way[];
+  public getWays!: HasManyGetAssociationsMixin<Way>;
+  public addWay!: HasManyAddAssociationMixin<Way, number>;
+  public setWays!: HasManySetAssociationsMixin<Way, number>;
+  public removeWay!: HasManyRemoveAssociationMixin<Way, number>;
+  public createWay!: HasManyCreateAssociationMixin<Way>;
+  public countWays!: HasManyCountAssociationsMixin;
 }

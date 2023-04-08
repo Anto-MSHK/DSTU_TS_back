@@ -6,11 +6,15 @@ import {
   Table,
   BelongsTo,
   ForeignKey,
+  PrimaryKey,
+  AutoIncrement,
 } from 'sequelize-typescript';
 import { Direction } from './direction.model';
 
 @Table
 export class Info extends Model<Info> {
+  @PrimaryKey
+  @AutoIncrement
   @Column(DataType.INTEGER)
   id: number;
 
