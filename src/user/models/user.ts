@@ -1,22 +1,37 @@
 import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  PrimaryKey,
-  Unique,
-  AutoIncrement,
   AllowNull,
+  AutoIncrement,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  HasOne,
   IsEmail,
-  Min,
   Max,
+  Min,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
 } from 'sequelize-typescript';
-
+import {
+  DataTypes,
+  HasOneCreateAssociationMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin,
+} from 'sequelize';
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Identity } from 'src/auth/models/Identity';
+
+interface UserAttrs {
+  email: string;
+  password: string;
+  role: 'user' | 'admin';
+}
 
 @Table
-export class User extends Model<User, CreateUserDto> {
+export class User extends Model<User, UserAttrs> {
   @ApiProperty({
     example: 1,
     description: 'Уникальный идентификатор пользователя.',
@@ -27,12 +42,10 @@ export class User extends Model<User, CreateUserDto> {
   id: number;
 
   @ApiProperty({ example: 'Иван', description: 'Имя пользователя.' })
-  @AllowNull(false)
   @Column(DataType.STRING)
   firstName: string;
 
   @ApiProperty({ example: 'Иванов', description: 'Фамилия пользователя.' })
-  @AllowNull(false)
   @Column(DataType.STRING)
   lastName: string;
 
@@ -60,7 +73,6 @@ export class User extends Model<User, CreateUserDto> {
   role: 'user' | 'admin';
 
   @ApiProperty({ example: 30, description: 'Возраст пользователя.' })
-  @AllowNull(false)
   @Min(0)
   @Max(150)
   @Column(DataType.INTEGER)
@@ -70,12 +82,16 @@ export class User extends Model<User, CreateUserDto> {
     example: 'женат',
     description: 'Семейное положение пользователя.',
   })
-  @AllowNull(false)
   @Column(DataType.STRING)
   maritalStatus: string;
 
   @ApiProperty({ example: 'мужской', description: 'Пол пользователя.' })
-  @AllowNull(false)
   @Column(DataType.STRING)
   gender: string;
+
+  @HasOne(() => Identity)
+  identity: Identity;
+  public getIdentity!: HasOneGetAssociationMixin<Identity>;
+  public setIdentity!: HasOneSetAssociationMixin<Identity, number>;
+  public createIdentity!: HasOneCreateAssociationMixin<Identity>;
 }

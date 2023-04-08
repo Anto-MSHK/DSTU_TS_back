@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from './auth/auth.module';
-
+import * as dotenv from 'dotenv';
+import { PassportModule } from '@nestjs/passport';
+import { UsersModule } from './user/UsersModule';
+import { AccessStrategy } from './strategy';
+dotenv.config();
 @Module({
   imports: [
-    UserModule,
+    UsersModule,
     SequelizeModule.forRoot({
       dialect: 'postgres',
       host: 'localhost',
@@ -19,8 +22,9 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     AuthModule,
+    PassportModule.register({ defaultStrategy: 'local' }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AccessStrategy],
 })
 export class AppModule {}
