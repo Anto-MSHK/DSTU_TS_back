@@ -32,10 +32,6 @@ interface UserAttrs {
 
 @Table
 export class User extends Model<User, UserAttrs> {
-  @ApiProperty({
-    example: 1,
-    description: 'Уникальный идентификатор пользователя.',
-  })
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)

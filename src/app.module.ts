@@ -7,6 +7,8 @@ import * as dotenv from 'dotenv';
 import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from './user/UsersModule';
 import { AccessStrategy } from './strategy';
+import { DirectionModule } from './direction/direction.module';
+import { TestModule } from './test/test.module';
 dotenv.config();
 @Module({
   imports: [
@@ -23,6 +25,8 @@ dotenv.config();
     }),
     AuthModule,
     PassportModule.register({ defaultStrategy: 'local' }),
+    DirectionModule,
+    TestModule,
   ],
   controllers: [AppController],
   providers: [AppService, AccessStrategy],
