@@ -29,7 +29,8 @@ export class DirectionService {
     const directionObj = await this.directionModel.findOne({
       where: { id: dirId },
     });
-    await directionObj.addWay(way);
+    const newWay = await this.wayModel.create(way);
+    await directionObj.addWay(newWay.id);
     await directionObj.reload();
     return directionObj;
   }
@@ -38,7 +39,8 @@ export class DirectionService {
     const directionObj = await this.directionModel.findOne({
       where: { id: dirId },
     });
-    await directionObj.addInfo(info);
+    const newInfo = await this.infoModel.create(info);
+    await directionObj.addInfo(newInfo.id);
     await directionObj.reload();
     return directionObj;
   }

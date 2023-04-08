@@ -25,7 +25,12 @@ import {
 import { Test } from 'src/test/models/test.model';
 import { Direction } from './direction.model';
 import { CreateWayDto } from '../dto/createWayDto';
-@Table
+import { CreateTestDto } from 'src/test/dto/createTestDto';
+@Table({
+  defaultScope: {
+    include: [{ model: Test, as: 'tests' }],
+  },
+})
 export class Way extends Model<Way, CreateWayDto> {
   @PrimaryKey
   @AutoIncrement
@@ -44,7 +49,7 @@ export class Way extends Model<Way, CreateWayDto> {
   @HasMany(() => Test)
   tests: Test[];
   public getTests!: HasManyGetAssociationsMixin<Test>;
-  public addTest!: HasManyAddAssociationMixin<Test, number>;
+  public addTest!: HasManyAddAssociationMixin<CreateTestDto, number>;
   public setTests!: HasManySetAssociationsMixin<Test, number>;
   public removeTest!: HasManyRemoveAssociationMixin<Test, number>;
   public createTest!: HasManyCreateAssociationMixin<Test>;

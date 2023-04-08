@@ -26,7 +26,11 @@ export enum QuestionType {
   FILL = 'fill',
 }
 
-@Table
+@Table({
+  defaultScope: {
+    include: [{ model: Answer, as: 'answers' }],
+  },
+})
 export class Question extends Model<Question, CreateQuestionDto> {
   @Column({
     type: DataType.INTEGER,

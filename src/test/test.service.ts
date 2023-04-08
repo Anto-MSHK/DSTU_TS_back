@@ -6,10 +6,13 @@ import { Answer } from './models/answer.model';
 import { CreateTestDto } from './dto/createTestDto';
 import { CreateQuestionDto } from './dto/createQuestionDto';
 import { CreateAnswerDto } from './dto/createAnswerDto';
+import { Way } from 'src/direction/models/way.model';
 
 @Injectable()
 export class TestsService {
   constructor(
+    @InjectModel(Way)
+    private readonly wayModel: typeof Way,
     @InjectModel(Test)
     private readonly testModel: typeof Test,
     @InjectModel(Question)
@@ -26,13 +29,19 @@ export class TestsService {
     return await this.testModel.findOne({ where: { id } });
   }
 
-  async createTest(data: CreateTestDto): Promise<Test> {
-    return await this.testModel.create(data);
+  async createTest(wayId: number, data: CreateTestDto): Promise<Way> {
+    const way = await this.wayModel.findOne({ where: { id: wayId } });
+    const newTest = await this.testModel.create(data);
+    await way.addTest(newTest.id);
+
+    await way.reload();
+    return way;
   }
 
   async createQuestion(testId: number, data: CreateQuestionDto): Promise<Test> {
     const test = await this.testModel.findOne({ where: { id: testId } });
-    await test.addQuestion(data);
+    const newQuestion = await this.questionModel.create(data);
+    await test.addQuestion(newQuestion.id);
     await test.reload();
     return test;
   }
@@ -44,7 +53,8 @@ export class TestsService {
     const question = await this.questionModel.findOne({
       where: { id: questionId },
     });
-    await question.addAnswer(data);
+    const newAnswer = await this.answerModel.create(data);
+    await question.addAnswer(newAnswer.id);
     await question.reload();
     return question;
   }

@@ -7,6 +7,7 @@ import {
   HasMany,
   PrimaryKey,
   AutoIncrement,
+  HasOne,
 } from 'sequelize-typescript';
 import { Info } from './info.model';
 import {
@@ -24,7 +25,15 @@ import { Way } from './way.model';
 import { CreateDirectionDto } from '../dto/createDirectionDto';
 import { CreateWayDto } from '../dto/createWayDto';
 import { CreateInfoDto } from '../dto/createInfoDto';
-@Table
+import { Test } from 'src/test/models/test.model';
+@Table({
+  defaultScope: {
+    include: [
+      { model: Info, as: 'infos' },
+      { model: Way, as: 'ways' },
+    ],
+  },
+})
 export class Direction extends Model<Direction, CreateDirectionDto> {
   @PrimaryKey
   @AutoIncrement
@@ -41,7 +50,7 @@ export class Direction extends Model<Direction, CreateDirectionDto> {
 
   @ApiProperty({ description: 'Связанные модели информации' })
   @HasMany(() => Info)
-  info: Info[];
+  infos: Info[];
   public getInfos!: HasManyGetAssociationsMixin<Info>;
   public addInfo!: HasManyAddAssociationMixin<CreateInfoDto, number>;
   public setInfos!: HasManySetAssociationsMixin<Info, number>;
@@ -51,7 +60,7 @@ export class Direction extends Model<Direction, CreateDirectionDto> {
 
   @ApiProperty({ description: 'Связанные модели пути' })
   @HasMany(() => Way)
-  way: Way[];
+  ways: Way[];
   public getWays!: HasManyGetAssociationsMixin<Way>;
   public addWay!: HasManyAddAssociationMixin<CreateWayDto, number>;
   public setWays!: HasManySetAssociationsMixin<Way, number>;

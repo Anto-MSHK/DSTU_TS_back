@@ -23,7 +23,11 @@ import { Way } from 'src/direction/models/way.model';
 import { CreateTestDto } from '../dto/createTestDto';
 import { CreateQuestionDto } from '../dto/createQuestionDto';
 
-@Table
+@Table({
+  defaultScope: {
+    include: [{ model: Question, as: 'questions' }],
+  },
+})
 export class Test extends Model<Test, CreateTestDto> {
   @Column({
     type: DataType.INTEGER,

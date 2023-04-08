@@ -15,17 +15,21 @@ import { CreateTestDto } from './dto/createTestDto';
 import { CreateQuestionDto } from './dto/createQuestionDto';
 import { CreateAnswerDto } from './dto/createAnswerDto';
 import { Question } from './models/question.model';
+import { Way } from 'src/direction/models/way.model';
 
 @ApiTags('tests')
 @Controller('tests')
 export class TestsController {
   constructor(private readonly testsService: TestsService) {}
 
-  @Post()
+  @Post('/:wayId/add-test')
   @ApiOperation({ summary: 'Создать тест' })
   @ApiResponse({ status: 201, description: 'Тест успешно создан' })
-  async createTest(@Body() data: CreateTestDto): Promise<Test> {
-    return await this.testsService.createTest(data);
+  async createTest(
+    @Param('wayId') wayId: number,
+    @Body() data: CreateTestDto,
+  ): Promise<Way> {
+    return await this.testsService.createTest(wayId, data);
   }
 
   @Post('/:testId/add-question')
@@ -76,10 +80,24 @@ export class TestsController {
     return await this.testsService.updateTest(+id, data);
   }
 
-  @Delete(':id')
+  @Delete('/:id/del-test')
   @ApiOperation({ summary: 'Удалить тест по ID' })
-  @ApiResponse({ status: 200, description: 'Тест успешно удален' })
-  async deleteTest(@Param('id') id: number): Promise<void> {
-    await this.testsService.deleteTest(+id);
+  @ApiResponse({ status: 200, description: 'тест успешно удален' })
+  async deleteTest(@Param('id') id: number): Promise<number> {
+    return await this.testsService.deleteTest(+id);
+  }
+
+  @Delete('/:id/del-question')
+  @ApiOperation({ summary: 'Удалить вопрос по ID' })
+  @ApiResponse({ status: 200, description: 'вопрос успешно удален' })
+  async deleteQuestion(@Param('id') id: number): Promise<number> {
+    return await this.testsService.deleteQuestion(+id);
+  }
+
+  @Delete('/:id/del-answer')
+  @ApiOperation({ summary: 'Удалить ответ по ID' })
+  @ApiResponse({ status: 200, description: 'ответ успешно удален' })
+  async deleteAnswer(@Param('id') id: number): Promise<number> {
+    return await this.testsService.deleteAnswer(+id);
   }
 }
