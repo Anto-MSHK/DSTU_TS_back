@@ -9,6 +9,14 @@ import { User } from './models/user';
 export class UsersService {
   constructor(@InjectModel(User) private userRepo: typeof User) {}
 
+  async getUsers() {
+    return await this.userRepo.findAll();
+  }
+
+  async getUserById(id: number) {
+    return await this.userRepo.findOne({ where: { id } });
+  }
+
   async create(DTO: CreateUserDTO) {
     const email = DTO.email;
     const password = await bcrypt.hash(DTO.password, 2);
