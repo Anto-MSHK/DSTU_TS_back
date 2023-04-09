@@ -29,4 +29,17 @@ export class UsersService {
   async findByMail(email: string) {
     return await this.userRepo.findOne({ where: { email } });
   }
+
+  async updateUser(id: number, data: User) {
+    const user = await this.userRepo.findOne({ where: { id } });
+    await user.update({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      age: data.age,
+      maritalStatus: data.maritalStatus,
+      gender: data.gender,
+    });
+    await user.reload();
+    return user;
+  }
 }
