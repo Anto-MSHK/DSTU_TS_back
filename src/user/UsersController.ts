@@ -28,10 +28,10 @@ export class UsersController {
   }
 
   @Put('/:id')
-  @ApiOperation({ summary: 'получить список всех пользователей' })
+  @ApiOperation({ summary: 'изменить информацию о пользователе' })
   @ApiResponse({
     status: 200,
-    type: [User],
+    type: User,
   })
   async updateUser(@Param('id') id: number, @Body() data: User): Promise<User> {
     return await this.usersService.updateUser(+id, data);
