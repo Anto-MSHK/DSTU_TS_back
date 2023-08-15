@@ -24,7 +24,7 @@ dotenv.config();
       database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: true,
-      dialectOptions: {}, //removed ssl
+      dialectOptions: { ssl: true, native: true }, //removed ssl
     }),
     AuthModule,
     PassportModule.register({ defaultStrategy: 'local' }),
