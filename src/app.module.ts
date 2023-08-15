@@ -15,6 +15,7 @@ dotenv.config();
     UsersModule,
     SequelizeModule.forRoot({
       dialect: 'postgres',
+      protocol: 'postgres',
       host: process.env.DB_HOST,
       uri: process.env.DB_URL,
       port: +process.env.DB_PORT,
@@ -23,9 +24,7 @@ dotenv.config();
       database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: true,
-      dialectOptions: {
-        ssl: false,
-      }, //removed ssl
+      dialectOptions: {}, //removed ssl
     }),
     AuthModule,
     PassportModule.register({ defaultStrategy: 'local' }),
