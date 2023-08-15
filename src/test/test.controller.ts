@@ -16,6 +16,8 @@ import { CreateQuestionDto } from './dto/createQuestionDto';
 import { CreateAnswerDto } from './dto/createAnswerDto';
 import { Question } from './models/question.model';
 import { Way } from 'src/direction/models/way.model';
+import { CreateCriteriaDto } from './dto/createCriteriaDto';
+import { Criteria } from './models/criteria.model';
 
 @ApiTags('tests')
 @Controller('tests')
@@ -56,6 +58,20 @@ export class TestsController {
     return await this.testsService.createAnswer(+questionId, data);
   }
 
+  @Post('/:testId/add-criteria')
+  @ApiOperation({ summary: 'создать критерий' })
+  @ApiResponse({
+    status: 201,
+    description: 'Критерий успешно создан',
+    type: Criteria,
+  })
+  async createCriteria(
+    @Param('testId') testId: number,
+    @Body() data: CreateCriteriaDto,
+  ): Promise<Criteria> {
+    return await this.testsService.createCriteria(testId, data);
+  }
+
   @Get()
   @ApiOperation({ summary: 'получить список всех тестов' })
   @ApiResponse({
@@ -65,6 +81,17 @@ export class TestsController {
   })
   async findAll(): Promise<Test[]> {
     return this.testsService.findAll();
+  }
+
+  @Get('/:testId/criteria')
+  @ApiOperation({ summary: 'получить список всех критериев' })
+  @ApiResponse({
+    status: 200,
+    description: 'Список всех критериев успешно получен',
+    type: [Criteria],
+  })
+  async findAllCriteria(@Param('testId') testId: number): Promise<Criteria[]> {
+    return this.testsService.findAllCriteria(testId);
   }
 
   @Get(':id')

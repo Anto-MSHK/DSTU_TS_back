@@ -12,7 +12,9 @@ async function bootstrap() {
   });
   const options = new DocumentBuilder()
     .setTitle('dstu_ts')
-    .setDescription('The API description')
+    .setDescription(
+      'Примечание: В запросах описаны все самые необходимые поля. Дополнительные поля проверять по факту запроса.',
+    )
     .setVersion('1.0')
     .build();
 

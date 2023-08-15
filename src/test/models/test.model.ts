@@ -15,14 +15,13 @@ import {
   HasManyGetAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManySetAssociationsMixin,
-  HasOneCreateAssociationMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
 } from 'sequelize';
 import { Way } from 'src/direction/models/way.model';
 import { CreateTestDto } from '../dto/createTestDto';
 import { CreateQuestionDto } from '../dto/createQuestionDto';
 import { ApiProperty } from '@nestjs/swagger';
+import { Criteria } from './criteria.model';
+import { CreateCriteriaDto } from '../dto/createCriteriaDto';
 
 @Table({
   defaultScope: {
@@ -68,6 +67,19 @@ export class Test extends Model<Test, CreateTestDto> {
   public removeQuestion!: HasManyRemoveAssociationMixin<Question, number>;
   public createQuestion!: HasManyCreateAssociationMixin<Question>;
   public countQuestions!: HasManyCountAssociationsMixin;
+
+  @ApiProperty({
+    description: 'критерии теста',
+    type: [Criteria],
+  })
+  @HasMany(() => Criteria)
+  criteria: Criteria[];
+  public getCriterias!: HasManyGetAssociationsMixin<Question>;
+  public addCriteria!: HasManyAddAssociationMixin<CreateCriteriaDto, number>;
+  public setCriterias!: HasManySetAssociationsMixin<Criteria, number>;
+  public removeCriteria!: HasManyRemoveAssociationMixin<Criteria, number>;
+  public createCriteria!: HasManyCreateAssociationMixin<Criteria>;
+  public countCriterias!: HasManyCountAssociationsMixin;
 
   @ForeignKey(() => Way)
   @Column({

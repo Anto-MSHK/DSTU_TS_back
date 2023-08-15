@@ -5,13 +5,28 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasOne,
 } from 'sequelize-typescript';
 import { Question } from './question.model';
 import { CreateAnswerDto } from '../dto/createAnswerDto';
 import { ApiProperty } from '@nestjs/swagger';
+import { Criteria } from './criteria.model';
+import {
+  HasOneCreateAssociationMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin,
+} from 'sequelize';
 
-@Table
+@Table({
+  defaultScope: {
+    include: [{ model: Criteria, as: 'criteria' }],
+  },
+})
 export class Answer extends Model<Answer, CreateAnswerDto> {
+  @ApiProperty({
+    description: 'id ответа',
+    example: 2,
+  })
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -29,16 +44,6 @@ export class Answer extends Model<Answer, CreateAnswerDto> {
   })
   text: string;
 
-  @ApiProperty({
-    description: 'это правильный ответ?',
-    example: false,
-  })
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-  })
-  isCorrect: boolean;
-
   @ForeignKey(() => Question)
   @Column({
     type: DataType.INTEGER,
@@ -47,4 +52,17 @@ export class Answer extends Model<Answer, CreateAnswerDto> {
 
   @BelongsTo(() => Question)
   question: Question;
+
+  @ForeignKey(() => Criteria)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  criteriaId: number;
+
+  @ApiProperty({
+    description: 'критерий',
+    type: Criteria,
+  })
+  @BelongsTo(() => Criteria)
+  criteria: Criteria;
 }

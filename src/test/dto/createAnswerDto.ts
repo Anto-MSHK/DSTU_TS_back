@@ -1,6 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/user/models/user';
-import { QuestionType } from '../models/question.model';
 
 export class CreateAnswerDto {
   @ApiProperty({
@@ -10,8 +8,8 @@ export class CreateAnswerDto {
   text: string;
 
   @ApiProperty({
-    example: false,
-    description: 'правильный или нет?',
+    example: 2,
+    description: 'id критерия',
   })
-  isCorrect: boolean;
+  criteria: number;
 }
