@@ -11,7 +11,7 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
   const options = new DocumentBuilder()
-    .setTitle('invst-back')
+    .setTitle('dstu_ts')
     .setDescription('The API description')
     .setVersion('1.0')
     .build();
