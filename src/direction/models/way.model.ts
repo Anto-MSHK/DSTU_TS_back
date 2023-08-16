@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   DataType,
@@ -47,7 +47,10 @@ export class Way extends Model<Way, CreateWayDto> {
   @Column(DataType.TEXT)
   desc: string;
 
-  @ApiProperty({ description: 'Связанные модели информации', type: [Test] })
+  @ApiProperty({
+    description: 'Связанные модели информации',
+    type: () => [Test],
+  })
   @HasMany(() => Test)
   tests: Test[];
   public getTests!: HasManyGetAssociationsMixin<Test>;

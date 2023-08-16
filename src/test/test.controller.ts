@@ -52,7 +52,11 @@ export class TestsController {
 
   @Post('/:questionId/add-answer')
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'создать ответ' })
+  @ApiOperation({
+    summary: 'создать ответ',
+    description:
+      'Ответ создаётся с указанием id критерия. В дальнейшем, по этому критерию считается результат.',
+  })
   @ApiResponse({
     status: 201,
     description: 'Тест успешно создан',
@@ -67,7 +71,11 @@ export class TestsController {
 
   @Post('/:testId/add-criteria')
   @Roles(Role.Admin)
-  @ApiOperation({ summary: 'создать критерий' })
+  @ApiOperation({
+    summary: 'создать критерий',
+    description:
+      'Создание критерия для оценки происходит только через администратора. Критерий прикрепляется лишь к одному тесту!',
+  })
   @ApiResponse({
     status: 201,
     description: 'Критерий успешно создан',
@@ -100,8 +108,11 @@ export class TestsController {
   }
 
   @Get('/:testId/criteria')
-  @Roles(Role.Admin)
-  @ApiOperation({ summary: 'получить список всех критериев' })
+  @ApiOperation({
+    summary: 'получить список всех критериев',
+    description:
+      'Запрос для получения всех критериев оценки. Критериев может быть 2 (правильно, неправильно) и более.',
+  })
   @ApiResponse({
     status: 200,
     description: 'Список всех критериев успешно получен',

@@ -134,10 +134,6 @@ export class User extends Model<User, UserAttrs> {
   @Column(DataType.STRING)
   password: string;
 
-  @ApiProperty({
-    description: 'результаты тестов',
-    type: [Results],
-  })
   @HasMany(() => Results)
   results: Results[];
   public getResults!: HasManyGetAssociationsMixin<Results>;
@@ -147,10 +143,6 @@ export class User extends Model<User, UserAttrs> {
   public createResult!: HasManyCreateAssociationMixin<Results>;
   public countResults!: HasManyCountAssociationsMixin;
 
-  @ApiProperty({
-    description: 'Направления пользователя',
-    type: [Direction],
-  })
   @HasMany(() => Direction)
   directions: Direction[];
   public getDirections!: HasManyGetAssociationsMixin<Direction>;

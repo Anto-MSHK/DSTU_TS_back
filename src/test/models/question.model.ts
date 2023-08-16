@@ -54,7 +54,7 @@ export class Question extends Model<Question, CreateQuestionDto> {
     title: 'тип вопроса',
     description:
       'single - вопрос с одним вариантом ответа; multiple - вопрос с многими вариантами ответа; fill - ручной ввод',
-    enum: QuestionType,
+    // enum: QuestionType,
   })
   @Column({
     type: DataType.ENUM,

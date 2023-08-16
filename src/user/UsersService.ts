@@ -50,7 +50,12 @@ export class UsersService {
     await user.update({
       firstName: data.firstName,
       lastName: data.lastName,
+      patronymic: data.patronymic,
       age: data.age,
+      phoneNumber: data.phoneNumber,
+      locality: data.locality,
+      schoolName: data.schoolName,
+      schoolClass: data.schoolClass,
       maritalStatus: data.maritalStatus,
       gender: data.gender,
     });

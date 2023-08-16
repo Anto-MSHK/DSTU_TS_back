@@ -59,7 +59,7 @@ export class Direction extends Model<Direction, CreateDirectionDto> {
   public createInfo!: HasManyCreateAssociationMixin<Info>;
   public countInfos!: HasManyCountAssociationsMixin;
 
-  @ApiProperty({ description: 'Связанные модели пути', type: [Way] })
+  @ApiProperty({ description: 'Связанные модели пути', type: () => [Way] })
   @HasMany(() => Way)
   ways: Way[];
   public getWays!: HasManyGetAssociationsMixin<Way>;
