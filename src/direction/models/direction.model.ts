@@ -7,7 +7,8 @@ import {
   HasMany,
   PrimaryKey,
   AutoIncrement,
-  HasOne,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Info } from './info.model';
 import {
@@ -17,15 +18,12 @@ import {
   HasManyGetAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManySetAssociationsMixin,
-  HasOneCreateAssociationMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
 } from 'sequelize';
 import { Way } from './way.model';
 import { CreateDirectionDto } from '../dto/createDirectionDto';
 import { CreateWayDto } from '../dto/createWayDto';
 import { CreateInfoDto } from '../dto/createInfoDto';
-import { Test } from 'src/test/models/test.model';
+import { User } from 'src/user/models/user.model';
 @Table({
   defaultScope: {
     include: [
@@ -73,4 +71,15 @@ export class Direction extends Model<Direction, CreateDirectionDto> {
   public removeWay!: HasManyRemoveAssociationMixin<Way, number>;
   public createWay!: HasManyCreateAssociationMixin<Way>;
   public countWays!: HasManyCountAssociationsMixin;
+
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  userId: number;
+
+  @BelongsTo(() => User, {
+    foreignKey: 'userId',
+  })
+  user: User;
 }

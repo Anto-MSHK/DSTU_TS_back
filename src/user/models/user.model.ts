@@ -28,6 +28,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Identity } from 'src/auth/models/Identity';
 import { Results } from './results.model';
 import { ResultsByCriteriaDTO } from '../dto/resultsByCriteria.dto';
+import { Direction } from 'src/direction/models/direction.model';
+import { CreateDirectionDto } from 'src/direction/dto/createDirectionDto';
 
 interface UserAttrs {
   email: string;
@@ -135,6 +137,19 @@ export class User extends Model<User, UserAttrs> {
   public removeResult!: HasManyRemoveAssociationMixin<Results, number>;
   public createResult!: HasManyCreateAssociationMixin<Results>;
   public countResults!: HasManyCountAssociationsMixin;
+
+  @ApiProperty({
+    description: 'Направления пользователя',
+    type: [Direction],
+  })
+  @HasMany(() => Direction)
+  direction: Direction[];
+  public getDirections!: HasManyGetAssociationsMixin<Direction>;
+  public addDirection!: HasManyAddAssociationMixin<CreateDirectionDto, number>;
+  public setDirections!: HasManySetAssociationsMixin<Direction, number>;
+  public removeDirection!: HasManyRemoveAssociationMixin<Direction, number>;
+  public createDirection!: HasManyCreateAssociationMixin<Direction>;
+  public countDirections!: HasManyCountAssociationsMixin;
 
   @HasOne(() => Identity)
   identity: Identity;

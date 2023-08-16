@@ -10,7 +10,6 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { Info } from './info.model';
 import {
   HasManyAddAssociationMixin,
   HasManyCountAssociationsMixin,
@@ -18,9 +17,6 @@ import {
   HasManyGetAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManySetAssociationsMixin,
-  HasOneCreateAssociationMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
 } from 'sequelize';
 import { Test } from 'src/test/models/test.model';
 import { Direction } from './direction.model';
