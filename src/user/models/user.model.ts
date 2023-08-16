@@ -31,13 +31,22 @@ import { ResultsByCriteriaDTO } from '../dto/resultsByCriteria.dto';
 import { Direction } from 'src/direction/models/direction.model';
 import { CreateDirectionDto } from 'src/direction/dto/createDirectionDto';
 
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
+}
+
 interface UserAttrs {
   email: string;
   password: string;
-  role: 'user' | 'admin';
+  role: Role;
 }
 
-@Table
+@Table({
+  defaultScope: {
+    include: [{ model: Direction, as: 'directions' }],
+  },
+})
 export class User extends Model<User, UserAttrs> {
   @PrimaryKey
   @AutoIncrement
@@ -118,7 +127,7 @@ export class User extends Model<User, UserAttrs> {
   })
   @AllowNull(false)
   @Column(DataType.ENUM('user', 'admin'))
-  role: 'user' | 'admin';
+  role: Role;
 
   @ApiProperty({ example: 'password123', description: 'Пароль пользователя.' })
   @AllowNull(false)
@@ -130,7 +139,7 @@ export class User extends Model<User, UserAttrs> {
     type: [Results],
   })
   @HasMany(() => Results)
-  result: Results[];
+  results: Results[];
   public getResults!: HasManyGetAssociationsMixin<Results>;
   public addResult!: HasManyAddAssociationMixin<ResultsByCriteriaDTO, number>;
   public setResults!: HasManySetAssociationsMixin<Results, number>;
@@ -143,7 +152,7 @@ export class User extends Model<User, UserAttrs> {
     type: [Direction],
   })
   @HasMany(() => Direction)
-  direction: Direction[];
+  directions: Direction[];
   public getDirections!: HasManyGetAssociationsMixin<Direction>;
   public addDirection!: HasManyAddAssociationMixin<CreateDirectionDto, number>;
   public setDirections!: HasManySetAssociationsMixin<Direction, number>;

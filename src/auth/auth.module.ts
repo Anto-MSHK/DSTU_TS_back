@@ -12,7 +12,11 @@ import { UsersModule } from 'src/user/UsersModule';
   providers: [AuthService, JwtService],
   exports: [AuthService, JwtService],
   imports: [
-    JwtModule.register({}),
+    JwtModule.register({
+      global: true,
+      secret: process.env.A_KEY,
+      signOptions: { expiresIn: '60s' },
+    }),
     SequelizeModule.forFeature([Identity, User]),
     UsersModule,
   ],

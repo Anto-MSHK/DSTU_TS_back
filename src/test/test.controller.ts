@@ -5,7 +5,9 @@ import {
   Put,
   Delete,
   Param,
+  Query,
   Body,
+  Request,
   NotFoundException,
 } from '@nestjs/common';
 import { TestsService } from './test.service';
@@ -18,6 +20,8 @@ import { Question } from './models/question.model';
 import { Way } from 'src/direction/models/way.model';
 import { CreateCriteriaDto } from './dto/createCriteriaDto';
 import { Criteria } from './models/criteria.model';
+import { Roles } from 'src/user/role.decorator';
+import { Role } from 'src/user/models/user.model';
 
 @ApiTags('tests')
 @Controller('tests')
@@ -25,6 +29,7 @@ export class TestsController {
   constructor(private readonly testsService: TestsService) {}
 
   @Post('/:wayId/add-test')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'cоздать тест' })
   @ApiResponse({ status: 201, description: 'Тест успешно создан', type: Way })
   async createTest(
@@ -35,6 +40,7 @@ export class TestsController {
   }
 
   @Post('/:testId/add-question')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'cоздать вопрос' })
   @ApiResponse({ status: 201, description: 'Тест успешно создан', type: Test })
   async createQuestion(
@@ -45,6 +51,7 @@ export class TestsController {
   }
 
   @Post('/:questionId/add-answer')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'создать ответ' })
   @ApiResponse({
     status: 201,
@@ -59,6 +66,7 @@ export class TestsController {
   }
 
   @Post('/:testId/add-criteria')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'создать критерий' })
   @ApiResponse({
     status: 201,
@@ -73,17 +81,26 @@ export class TestsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'получить список всех тестов' })
+  @Roles(Role.Admin)
+  @ApiOperation({
+    summary: 'получить список всех тестов',
+    description:
+      'Закрытый запрос. Только для Админа. Без wayId выдаёт все тесты, а при наличии параметра - только связанные с ним.',
+  })
   @ApiResponse({
     status: 200,
     description: 'Список тестов успешно получен',
     type: [Test],
   })
-  async findAll(): Promise<Test[]> {
-    return this.testsService.findAll();
+  async findAll(
+    @Query('wayId') wayId: number,
+    @Request() req,
+  ): Promise<Test[]> {
+    return this.testsService.findAll(wayId, req.user.id);
   }
 
   @Get('/:testId/criteria')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'получить список всех критериев' })
   @ApiResponse({
     status: 200,
@@ -95,14 +112,18 @@ export class TestsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'получить тест по ID' })
+  @ApiOperation({
+    summary: 'получить тест по ID',
+    description:
+      'Это общедоступный запрос, в отличии от базового /tests/. Однако, поле "criteria" отображается только у пользователя с ролью "admin"',
+  })
   @ApiResponse({
     status: 200,
     description: 'Тест успешно получен',
     type: Test,
   })
-  async findOne(@Param('id') id: string): Promise<Test> {
-    const test = await this.testsService.findOne(+id);
+  async findOne(@Param('id') id: string, @Request() req): Promise<Test> {
+    const test = await this.testsService.findOne(+id, req.user.role);
     if (!test) {
       throw new NotFoundException('Тест не найден');
     }
@@ -110,6 +131,7 @@ export class TestsController {
   }
 
   @Put(':id')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'обновить тест по ID' })
   @ApiResponse({
     status: 200,
@@ -124,6 +146,7 @@ export class TestsController {
   }
 
   @Delete('/:testId/del-test')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'удалить тест по ID' })
   @ApiResponse({ status: 200, description: 'тест успешно удален' })
   async deleteTest(@Param('testId') testId: number): Promise<number> {
@@ -131,6 +154,7 @@ export class TestsController {
   }
 
   @Delete('/:questionId/del-question')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'удалить вопрос по ID' })
   @ApiResponse({ status: 200, description: 'вопрос успешно удален' })
   async deleteQuestion(
@@ -140,6 +164,7 @@ export class TestsController {
   }
 
   @Delete('/:answerId/del-answer')
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'удалить ответ по ID' })
   @ApiResponse({ status: 200, description: 'ответ успешно удален' })
   async deleteAnswer(@Param('answerId') answerId: number): Promise<number> {

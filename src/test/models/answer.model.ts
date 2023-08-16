@@ -17,11 +17,7 @@ import {
   HasOneSetAssociationMixin,
 } from 'sequelize';
 
-@Table({
-  defaultScope: {
-    include: [{ model: Criteria, as: 'criteria' }],
-  },
-})
+@Table
 export class Answer extends Model<Answer, CreateAnswerDto> {
   @ApiProperty({
     description: 'id ответа',

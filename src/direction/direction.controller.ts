@@ -1,14 +1,23 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Request,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { DirectionService } from './direction.service';
 import { Direction } from './models/direction.model';
 import { CreateDirectionDto } from './dto/createDirectionDto';
 import { CreateWayDto } from './dto/createWayDto';
 import { CreateInfoDto } from './dto/createInfoDto';
-import { Way } from './models/way.model';
-import { Info } from './models/info.model';
+import { Roles } from 'src/user/role.decorator';
+import { Role } from 'src/user/models/user.model';
 
 @ApiTags('directions')
+@Roles(Role.Admin)
 @Controller('directions')
 export class DirectionController {
   constructor(private readonly directionService: DirectionService) {}
@@ -30,8 +39,11 @@ export class DirectionController {
     status: 201,
     type: Direction,
   })
-  async create(@Body() direction: CreateDirectionDto): Promise<Direction> {
-    return await this.directionService.createDirection(direction);
+  async create(
+    @Body() direction: CreateDirectionDto,
+    @Request() req,
+  ): Promise<Direction> {
+    return await this.directionService.createDirection(direction, req.user.id);
   }
 
   @Post('/:dirId/add-way')

@@ -15,9 +15,10 @@ import { AnswerLogDTO } from '../dto/answerLog.dto';
 import { Test } from 'src/test/models/test.model';
 
 interface ResultsAttrs {
-  email: string;
-  password: string;
-  role: 'user' | 'admin';
+  userId: number;
+  testId: number;
+  byCriteria?: ResultsByCriteriaDTO[];
+  answersLog?: AnswerLogDTO[];
 }
 
 @Table
@@ -31,14 +32,14 @@ export class Results extends Model<Results, ResultsAttrs> {
     type: [ResultsByCriteriaDTO],
     description: 'Результаты по критериям',
   })
-  @Column(DataType.ARRAY(DataType.JSON))
+  @Column(DataType.ARRAY(DataType.JSONB))
   byCriteria: ResultsByCriteriaDTO[];
 
   @ApiProperty({
     type: [AnswerLogDTO],
     description: 'Журнал ответов на тест',
   })
-  @Column(DataType.JSON)
+  @Column(DataType.JSONB)
   answersLog: AnswerLogDTO[];
 
   @ForeignKey(() => User)

@@ -22,8 +22,11 @@ export class DirectionService {
     return this.directionModel.findAll();
   }
 
-  async createDirection(direction: CreateDirectionDto): Promise<Direction> {
-    return this.directionModel.create(direction);
+  async createDirection(
+    direction: CreateDirectionDto,
+    userId: number,
+  ): Promise<Direction> {
+    return this.directionModel.create({ ...direction, userId });
   }
   async createWay(dirId: number, way: CreateWayDto): Promise<Direction> {
     const directionObj = await this.directionModel.findOne({

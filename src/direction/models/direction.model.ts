@@ -26,10 +26,7 @@ import { CreateInfoDto } from '../dto/createInfoDto';
 import { User } from 'src/user/models/user.model';
 @Table({
   defaultScope: {
-    include: [
-      { model: Info, as: 'infos' },
-      { model: Way, as: 'ways' },
-    ],
+    include: ['infos', 'ways'],
   },
 })
 export class Direction extends Model<Direction, CreateDirectionDto> {

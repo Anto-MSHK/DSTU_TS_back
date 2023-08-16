@@ -9,6 +9,20 @@ import { UsersModule } from './user/UsersModule';
 import { AccessStrategy } from './strategy';
 import { DirectionModule } from './direction/direction.module';
 import { TestModule } from './test/test.module';
+import { RolesGuard } from './guards/roleGuard';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/authGuard';
+import { Test } from './test/models/test.model';
+import { Question } from './test/models/question.model';
+import { Answer } from './test/models/answer.model';
+import { Results } from './user/models/results.model';
+import { User } from './user/models/user.model';
+import { Identity } from './auth/models/Identity';
+import { Criteria } from './test/models/criteria.model';
+import { Direction } from './direction/models/direction.model';
+import { Info } from './direction/models/info.model';
+import { Way } from './direction/models/way.model';
+
 dotenv.config();
 @Module({
   imports: [
@@ -24,6 +38,18 @@ dotenv.config();
       database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: true,
+      models: [
+        Test,
+        Question,
+        Answer,
+        Results,
+        User,
+        Identity,
+        Criteria,
+        Direction,
+        Info,
+        Way,
+      ],
     }),
     AuthModule,
     PassportModule.register({ defaultStrategy: 'local' }),
@@ -31,6 +57,17 @@ dotenv.config();
     TestModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AccessStrategy],
+  providers: [
+    AppService,
+    AccessStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}

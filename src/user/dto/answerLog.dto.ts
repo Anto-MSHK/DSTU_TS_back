@@ -5,5 +5,5 @@ export class AnswerLogDTO {
   questionId: number;
 
   @ApiProperty({ description: 'массив id ответов', example: [3, 6] })
-  answerId: number[];
+  answerIds: number[];
 }

@@ -25,11 +25,7 @@ import { CreateCriteriaDto } from '../dto/createCriteriaDto';
 import { Results } from 'src/user/models/results.model';
 import { ResultsByCriteriaDTO } from 'src/user/dto/resultsByCriteria.dto';
 
-@Table({
-  defaultScope: {
-    include: [{ model: Question, as: 'questions' }],
-  },
-})
+@Table
 export class Test extends Model<Test, CreateTestDto> {
   @Column({
     type: DataType.INTEGER,

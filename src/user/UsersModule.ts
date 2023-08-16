@@ -5,11 +5,16 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { Results } from './models/results.model';
+import { Question } from 'src/test/models/question.model';
+import { Answer } from 'src/test/models/answer.model';
+import { Test } from 'src/test/models/test.model';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService, JwtService],
   exports: [UsersService],
-  imports: [SequelizeModule.forFeature([User, Results])],
+  imports: [
+    SequelizeModule.forFeature([User, Results, Question, Answer, Test]),
+  ],
 })
 export class UsersModule {}

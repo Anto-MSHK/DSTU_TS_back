@@ -24,7 +24,7 @@ import { CreateWayDto } from '../dto/createWayDto';
 import { CreateTestDto } from 'src/test/dto/createTestDto';
 @Table({
   defaultScope: {
-    include: [{ model: Test, as: 'tests' }],
+    include: 'tests',
   },
 })
 export class Way extends Model<Way, CreateWayDto> {

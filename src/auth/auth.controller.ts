@@ -13,6 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseDto } from './dto/response.dto';
 import { CreateUserDTO } from 'src/user/dto/createUser.dto';
+import { Public } from './auth.decorator';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -21,6 +22,7 @@ export class AuthController {
   @ApiOperation({ summary: 'регистрация/создание пользователя' })
   @ApiResponse({ status: 200, type: ResponseDto })
   @Post('/register')
+  @Public()
   async register(@Body() dto: CreateUserDTO, @Response() res) {
     const result = await this.authService.register(dto);
     this.setRefreshAndSendAccess(res, result.tokens, result.user);
@@ -29,6 +31,7 @@ export class AuthController {
   @ApiOperation({ summary: 'логин' })
   @ApiResponse({ status: 200, type: ResponseDto })
   @Post('/login')
+  @Public()
   async login(@Body() dto: CreateUserDTO, @Response() res) {
     const result = await this.authService.login(dto);
     this.setRefreshAndSendAccess(res, result.tokens, result.user);

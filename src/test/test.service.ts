@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Test } from 'src/test/models/test.model';
 import { Question } from './models/question.model';
@@ -9,10 +9,14 @@ import { CreateAnswerDto } from './dto/createAnswerDto';
 import { Way } from 'src/direction/models/way.model';
 import { CreateCriteriaDto } from './dto/createCriteriaDto';
 import { Criteria } from './models/criteria.model';
+import { Direction } from 'src/direction/models/direction.model';
+import { Role, User } from 'src/user/models/user.model';
 
 @Injectable()
 export class TestsService {
   constructor(
+    @InjectModel(User)
+    private readonly userModel: typeof User,
     @InjectModel(Way)
     private readonly wayModel: typeof Way,
     @InjectModel(Test)
@@ -25,16 +29,84 @@ export class TestsService {
     private readonly criteriaModel: typeof Criteria,
   ) {}
 
-  async findAll(): Promise<Test[]> {
-    return await this.testModel.findAll();
+  async findAll(wayId: number | undefined, userId: number): Promise<Test[]> {
+    const includeConf = [
+      {
+        model: Question,
+        as: 'questions',
+        include: [
+          {
+            model: Answer,
+            as: 'answers',
+            include: [
+              {
+                model: Criteria,
+                as: 'criteria',
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    if (wayId)
+      return await this.testModel.findAll({
+        where: { wayId },
+        include: includeConf,
+      });
+    else {
+      const user = await this.userModel.findOne({
+        where: { id: userId },
+      });
+
+      const allTests = [];
+
+      await Promise.all(
+        user.directions.map(async (dir) => {
+          await Promise.all(
+            dir.ways.map(async (way) => {
+              await Promise.all(
+                way.tests.map(async (test) => {
+                  allTests.push(
+                    await this.testModel.findOne({
+                      where: { id: test.id },
+                      include: includeConf,
+                    }),
+                  );
+                }),
+              );
+            }),
+          );
+        }),
+      );
+
+      return allTests;
+    }
   }
 
   async findAllCriteria(testId: number): Promise<Criteria[]> {
     return await this.criteriaModel.findAll({ where: { testId } });
   }
 
-  async findOne(id: number): Promise<Test> {
-    return await this.testModel.findOne({ where: { id } });
+  async findOne(id: number, userRole: Role): Promise<Test> {
+    return await this.testModel.findOne({
+      where: { id },
+      include: [
+        {
+          model: Question,
+          as: 'questions',
+          include: [
+            {
+              model: Answer,
+              as: 'answers',
+              include:
+                userRole === Role.Admin
+                  ? [{ model: Criteria, as: 'criteria' }]
+                  : [],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   async createTest(wayId: number, data: CreateTestDto): Promise<Way> {
@@ -48,6 +120,7 @@ export class TestsService {
 
   async createQuestion(testId: number, data: CreateQuestionDto): Promise<Test> {
     const test = await this.testModel.findOne({ where: { id: testId } });
+    if (!test) throw new NotFoundException('Теста не существует!');
     const newQuestion = await this.questionModel.create(data);
     await test.addQuestion(newQuestion.id);
     await test.reload();
@@ -61,6 +134,7 @@ export class TestsService {
     const question = await this.questionModel.findOne({
       where: { id: questionId },
     });
+    if (!question) throw new NotFoundException('Вопрос не найден!');
     const criteria = await this.criteriaModel.findOne({
       where: { id: data.criteria },
     });
