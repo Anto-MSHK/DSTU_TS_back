@@ -22,6 +22,8 @@ import { CreateQuestionDto } from '../dto/createQuestionDto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Criteria } from './criteria.model';
 import { CreateCriteriaDto } from '../dto/createCriteriaDto';
+import { Results } from 'src/user/models/results.model';
+import { ResultsByCriteriaDTO } from 'src/user/dto/resultsByCriteria.dto';
 
 @Table({
   defaultScope: {
@@ -80,6 +82,15 @@ export class Test extends Model<Test, CreateTestDto> {
   public removeCriteria!: HasManyRemoveAssociationMixin<Criteria, number>;
   public createCriteria!: HasManyCreateAssociationMixin<Criteria>;
   public countCriterias!: HasManyCountAssociationsMixin;
+
+  @HasMany(() => Results)
+  result: Results[];
+  public getResults!: HasManyGetAssociationsMixin<Results>;
+  public addResult!: HasManyAddAssociationMixin<ResultsByCriteriaDTO, number>;
+  public setResults!: HasManySetAssociationsMixin<Results, number>;
+  public removeResult!: HasManyRemoveAssociationMixin<Results, number>;
+  public createResult!: HasManyCreateAssociationMixin<Results>;
+  public countResults!: HasManyCountAssociationsMixin;
 
   @ForeignKey(() => Way)
   @Column({

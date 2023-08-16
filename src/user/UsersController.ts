@@ -1,7 +1,7 @@
-import { Controller, Get, Param, UseGuards, Put, Body } from '@nestjs/common';
+import { Controller, Get, Param, Put, Body } from '@nestjs/common';
 import { UsersService } from './UsersService';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { User } from './models/user';
+import { User } from './models/user.model';
 
 @Controller('users')
 export class UsersController {

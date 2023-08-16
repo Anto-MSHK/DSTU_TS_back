@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/user/models/user';
+import { User } from 'src/user/models/user.model';
 
 interface Attrs {
   userId: number;

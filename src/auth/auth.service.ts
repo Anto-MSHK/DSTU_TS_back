@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { Identity } from './models/Identity';
-import { User } from '../user/models/user';
+import { User } from '../user/models/user.model';
 import { CreateUserDTO } from '../user/dto/createUser.dto';
 import * as uuid from 'uuid';
 dotenv.config();
