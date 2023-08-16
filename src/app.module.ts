@@ -50,6 +50,7 @@ dotenv.config();
         Info,
         Way,
       ],
+      dialectOptions: { ssl: true, native: true },
     }),
     AuthModule,
     PassportModule.register({ defaultStrategy: 'local' }),
