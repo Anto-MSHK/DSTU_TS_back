@@ -44,7 +44,10 @@ interface UserAttrs {
 
 @Table({
   defaultScope: {
-    include: [{ model: Direction, as: 'directions' }],
+    include: [
+      { model: Direction, as: 'directions' },
+      { model: Results, as: 'results' },
+    ],
   },
 })
 export class User extends Model<User, UserAttrs> {
