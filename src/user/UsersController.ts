@@ -57,7 +57,6 @@ export class UsersController {
     return await this.usersService.updateUser(+id, data);
   }
 
-  @Post('/test/save/:testId')
   @ApiOperation({
     summary: 'Отправить ответы на тест',
     description:
@@ -68,6 +67,7 @@ export class UsersController {
     status: 200,
     type: Results,
   })
+  @Post('/test/save/:testId')
   async saveAnswers(
     @Param('testId') testId: number,
     @Body() data: AnswerLogDTO[],
@@ -76,19 +76,6 @@ export class UsersController {
     return await this.usersService.saveAnswers(+testId, req.user.id, data);
   }
 
-  @Get('/results')
-  @ApiOperation({
-    summary: 'Получить краткие ответы на все связанные с пользователем тесты',
-  })
-  @ApiResponse({
-    status: 200,
-    type: AllResultsDTO,
-  })
-  async allResults(@Request() req): Promise<any> {
-    return await this.usersService.getAllResults(req.user.id);
-  }
-
-  @Get('/results/:id')
   @ApiOperation({
     summary: 'Получить ответы по тесту',
   })
@@ -96,10 +83,23 @@ export class UsersController {
     status: 200,
     type: ResultsByTestDTO,
   })
+  @Get('/result/:id')
   async resultsByTest(
-    @Param('testId') testId: number,
+    @Param('id') testId: number,
     @Request() req,
   ): Promise<ResultsByTestDTO> {
     return await this.usersService.getResultsByTest(testId, req.user.id);
+  }
+
+  @ApiOperation({
+    summary: 'Получить краткие ответы на все связанные с пользователем тесты',
+  })
+  @ApiResponse({
+    status: 200,
+    type: AllResultsDTO,
+  })
+  @Get('/test/results')
+  async allResults(@Request() req): Promise<any> {
+    return await this.usersService.getAllResults(req.user.id);
   }
 }

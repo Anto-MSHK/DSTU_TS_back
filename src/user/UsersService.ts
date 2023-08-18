@@ -174,7 +174,7 @@ export class UsersService {
           return {
             question: curQuestion,
             answers: curQuestion.answers.map((aw) => ({
-              ...aw,
+              ...aw.dataValues,
               isAnswer: log.answerIds.includes(aw.id) ? true : undefined,
             })),
           };
