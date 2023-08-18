@@ -22,6 +22,8 @@ export class TestsService {
     private readonly resultsModel: typeof Results,
     @InjectModel(Way)
     private readonly wayModel: typeof Way,
+    @InjectModel(Direction)
+    private readonly directionModel: typeof Direction,
     @InjectModel(Test)
     private readonly testModel: typeof Test,
     @InjectModel(Question)
@@ -95,10 +97,7 @@ export class TestsService {
       where: { userId: user.id, testId: id },
     });
 
-    if (!curResults)
-      await this.resultsModel.create({ userId: user.id, testId: id });
-
-    return await this.testModel.findOne({
+    const curTest = await this.testModel.findOne({
       where: { id },
       include: [
         {
@@ -117,6 +116,16 @@ export class TestsService {
         },
       ],
     });
+
+    if (!curTest) return undefined;
+
+    const curWay = await this.wayModel.findByPk(curTest.wayId);
+    const curDirection = await this.directionModel.findByPk(curWay.directionId);
+
+    if (!curResults && curDirection.userId === user.id)
+      await this.resultsModel.create({ userId: user.id, testId: id });
+
+    return curTest;
   }
 
   async createTest(wayId: number, data: CreateTestDto): Promise<Way> {
