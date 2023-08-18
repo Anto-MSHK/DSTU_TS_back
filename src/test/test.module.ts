@@ -9,6 +9,7 @@ import { Way } from 'src/direction/models/way.model';
 import { Criteria } from './models/criteria.model';
 import { User } from 'src/user/models/user.model';
 import { Direction } from 'src/direction/models/direction.model';
+import { Results } from 'src/user/models/results.model';
 
 @Module({
   providers: [TestsService],
@@ -18,6 +19,7 @@ import { Direction } from 'src/direction/models/direction.model';
       Way,
       User,
       Test,
+      Results,
       Question,
       Answer,
       Criteria,
