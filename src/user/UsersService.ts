@@ -13,11 +13,13 @@ import { Test } from 'src/test/models/test.model';
 import { ResultsByCriteriaDTO } from './dto/resultsByCriteria.dto';
 import { Answer } from 'src/test/models/answer.model';
 import { Question } from 'src/test/models/question.model';
+import { Criteria } from 'src/test/models/criteria.model';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User) private userRepo: typeof User,
+    @InjectModel(Criteria) private criteriaRepo: typeof Criteria,
     @InjectModel(Results) private resultsRepo: typeof Results,
     @InjectModel(Question) private questionRepo: typeof Question,
     @InjectModel(Answer) private answersRepo: typeof Answer,
@@ -122,5 +124,63 @@ export class UsersService {
     });
     await results.reload();
     return results;
+  }
+
+  async getAllResults(userId: number) {
+    const results = await this.resultsRepo.findAll({ where: { userId } });
+
+    const allTests = await Promise.all(
+      results.map(async (res) => {
+        const testInfo = await this.testRepo.findOne({
+          where: { id: res.testId },
+        });
+
+        return {
+          testInfo,
+          result: results,
+        };
+      }),
+    );
+
+    return allTests;
+  }
+
+  async getResultsByTest(testId: number, userId: number) {
+    const results = await this.resultsRepo.findOne({
+      where: { testId, userId },
+    });
+
+    if (!results)
+      throw new NotFoundException('Вы ещё не отвечали на этот тест!');
+
+    let criterias = [];
+    if (results.byCriteria)
+      criterias = await Promise.all(
+        results.byCriteria.map(async (cr) => {
+          const curCriteria = await this.criteriaRepo.findOne({
+            where: { id: cr.criteriaId },
+          });
+          return { criteria: curCriteria, result: cr.result };
+        }),
+      );
+
+    let logs = [];
+    if (results.answersLog)
+      logs = await Promise.all(
+        results.answersLog.map(async (log) => {
+          const curQuestion = await this.questionRepo.findOne({
+            where: { id: log.questionId },
+          });
+          return {
+            question: curQuestion,
+            answers: curQuestion.answers.map((aw) => ({
+              ...aw,
+              isAnswer: log.answerIds.includes(aw.id) ? true : undefined,
+            })),
+          };
+        }),
+      );
+
+    return { criterias, logs };
   }
 }

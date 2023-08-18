@@ -19,6 +19,8 @@ import { Role, User } from './models/user.model';
 import { Roles } from './role.decorator';
 import { AnswerLogDTO } from './dto/answerLog.dto';
 import { Results } from './models/results.model';
+import { ResultsByTestDTO } from './dto/resultsByTest.dto';
+import { AllResultsDTO } from './dto/allResults.dto';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -58,7 +60,8 @@ export class UsersController {
   @Post('/test/save/:testId')
   @ApiOperation({
     summary: 'Отправить ответы на тест',
-    description: 'Отправлять ответы нужно в один запрос. Передаваемая нагрузка - массив с объетами, где обозначен id вопроса и массив ответов на этот вопрос от пользователя. Если ответ у вопроса только один (single), то массив будет состоять из одного элемента. Есть возможность изменять ответы: если отправить новый запрос с изменёнными ответами, то они перезапишутся.',
+    description:
+      'Отправлять ответы нужно в один запрос. Передаваемая нагрузка - массив с объетами, где обозначен id вопроса и массив ответов на этот вопрос от пользователя. Если ответ у вопроса только один (single), то массив будет состоять из одного элемента. Есть возможность изменять ответы: если отправить новый запрос с изменёнными ответами, то они перезапишутся.',
   })
   @ApiBody({ type: [AnswerLogDTO] })
   @ApiResponse({
@@ -71,5 +74,32 @@ export class UsersController {
     @Request() req,
   ): Promise<Results> {
     return await this.usersService.saveAnswers(+testId, req.user.id, data);
+  }
+
+  @Get('/results')
+  @ApiOperation({
+    summary: 'Получить краткие ответы на все связанные с пользователем тесты',
+  })
+  @ApiResponse({
+    status: 200,
+    type: AllResultsDTO,
+  })
+  async allResults(@Request() req): Promise<any> {
+    return await this.usersService.getAllResults(req.user.id);
+  }
+
+  @Get('/results/:id')
+  @ApiOperation({
+    summary: 'Получить ответы по тесту',
+  })
+  @ApiResponse({
+    status: 200,
+    type: ResultsByTestDTO,
+  })
+  async resultsByTest(
+    @Param('testId') testId: number,
+    @Request() req,
+  ): Promise<ResultsByTestDTO> {
+    return await this.usersService.getResultsByTest(testId, req.user.id);
   }
 }
