@@ -11,12 +11,15 @@ import { CreateCriteriaDto } from './dto/createCriteriaDto';
 import { Criteria } from './models/criteria.model';
 import { Direction } from 'src/direction/models/direction.model';
 import { Role, User } from 'src/user/models/user.model';
+import { Results } from 'src/user/models/results.model';
 
 @Injectable()
 export class TestsService {
   constructor(
     @InjectModel(User)
     private readonly userModel: typeof User,
+    @InjectModel(Results)
+    private readonly resultsModel: typeof Results,
     @InjectModel(Way)
     private readonly wayModel: typeof Way,
     @InjectModel(Test)
@@ -87,7 +90,14 @@ export class TestsService {
     return await this.criteriaModel.findAll({ where: { testId } });
   }
 
-  async findOne(id: number, userRole: Role): Promise<Test> {
+  async findOne(id: number, user: { id: number; role: Role }): Promise<Test> {
+    const curResults = await this.resultsModel.findOne({
+      where: { userId: user.id, testId: id },
+    });
+
+    if (!curResults)
+      await this.resultsModel.create({ userId: user.id, testId: id });
+
     return await this.testModel.findOne({
       where: { id },
       include: [
@@ -99,7 +109,7 @@ export class TestsService {
               model: Answer,
               as: 'answers',
               include:
-                userRole === Role.Admin
+                user.role === Role.Admin
                   ? [{ model: Criteria, as: 'criteria' }]
                   : [],
             },

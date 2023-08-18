@@ -134,7 +134,7 @@ export class TestsController {
     type: Test,
   })
   async findOne(@Param('id') id: string, @Request() req): Promise<Test> {
-    const test = await this.testsService.findOne(+id, req.user.role);
+    const test = await this.testsService.findOne(+id, req.user);
     if (!test) {
       throw new NotFoundException('Тест не найден');
     }
