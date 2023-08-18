@@ -137,7 +137,7 @@ export class UsersService {
 
         return {
           testInfo,
-          result: results,
+          result: res,
         };
       }),
     );
