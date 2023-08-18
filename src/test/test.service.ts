@@ -122,7 +122,7 @@ export class TestsService {
     const curWay = await this.wayModel.findByPk(curTest.wayId);
     const curDirection = await this.directionModel.findByPk(curWay.directionId);
 
-    if (!curResults && curDirection.userId === user.id)
+    if (!curResults && curDirection.userId !== user.id)
       await this.resultsModel.create({ userId: user.id, testId: id });
 
     return curTest;
