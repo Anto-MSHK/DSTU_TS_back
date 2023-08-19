@@ -96,7 +96,7 @@ export class UsersService {
           );
 
         answers.map((curAnswer) => {
-          if (curAnswer) {
+          if (curAnswer.criteria) {
             const criteriaIndex = byCriteria.findIndex(
               (cr) => cr.criteriaId === curAnswer.criteria.id,
             );
