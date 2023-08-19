@@ -96,12 +96,14 @@ export class UsersService {
           );
 
         answers.map((curAnswer) => {
-          const criteriaIndex = byCriteria.findIndex(
-            (cr) => cr.criteriaId === curAnswer.criteria.id,
-          );
-          if (criteriaIndex > -1) byCriteria[criteriaIndex].result += 1;
-          else
-            byCriteria.push({ criteriaId: curAnswer.criteria.id, result: 1 });
+          if (curAnswer) {
+            const criteriaIndex = byCriteria.findIndex(
+              (cr) => cr.criteriaId === curAnswer.criteria.id,
+            );
+            if (criteriaIndex > -1) byCriteria[criteriaIndex].result += 1;
+            else
+              byCriteria.push({ criteriaId: curAnswer.criteria.id, result: 1 });
+          }
         });
       }),
     );
