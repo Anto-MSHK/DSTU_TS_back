@@ -84,6 +84,7 @@ export class UsersService {
             async (answerId) =>
               await this.answersRepo.findOne({
                 where: { id: answerId },
+                include: [{ model: Criteria, as: 'criteria' }],
               }),
           ),
         );
