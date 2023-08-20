@@ -92,8 +92,8 @@ export class TestsService {
     return await this.criteriaModel.findAll({ where: { testId } });
   }
 
-  async findOne(id: number, user: { id: number; role: Role }): Promise<Test> {
-    const curResults = await this.resultsModel.findOne({
+  async findOne(id: number, user: { id: number; role: Role }): Promise<any> {
+    let curResults = await this.resultsModel.findOne({
       where: { userId: user.id, testId: id },
     });
 
@@ -123,9 +123,29 @@ export class TestsService {
     const curDirection = await this.directionModel.findByPk(curWay.directionId);
 
     if (!curResults && curDirection.userId !== user.id)
-      await this.resultsModel.create({ userId: user.id, testId: id });
+      curResults = await this.resultsModel.create({
+        userId: user.id,
+        testId: id,
+      });
 
-    return curTest;
+    const testWithAnswers = { ...curTest.dataValues };
+    if (curDirection.userId !== user.id && curResults.answersLog)
+      curResults.answersLog.map((log) => {
+        const curQstIndex = testWithAnswers.questions.findIndex(
+          (qst) => qst.id === log.questionId,
+        );
+        if (curQstIndex !== -1) {
+          testWithAnswers.questions[curQstIndex] =
+            testWithAnswers.questions[curQstIndex].dataValues;
+          testWithAnswers.questions[curQstIndex].answers =
+            testWithAnswers.questions[curQstIndex].answers.map((answer) => {
+              if (log.answerIds.includes(answer.id))
+                return { ...answer.dataValues, isAnswer: true } as any;
+              else return { ...answer.dataValues };
+            });
+        }
+      });
+    return testWithAnswers;
   }
 
   async createTest(wayId: number, data: CreateTestDto): Promise<Way> {
