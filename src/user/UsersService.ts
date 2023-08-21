@@ -117,16 +117,16 @@ export class UsersService {
       await resCandidate.update({ byCriteria, answersLog: data });
       await resCandidate.reload();
       return resCandidate;
+    } else {
+      const results = await this.resultsRepo.create({
+        userId,
+        testId,
+        byCriteria,
+        answersLog: data,
+      });
+      await results.reload();
+      return results;
     }
-
-    const results = await this.resultsRepo.create({
-      userId,
-      testId,
-      byCriteria,
-      answersLog: data,
-    });
-    await results.reload();
-    return results;
   }
 
   async getAllResults(userId: number) {
