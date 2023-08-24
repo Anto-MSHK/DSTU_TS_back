@@ -5,7 +5,6 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-  HasOne,
   HasMany,
 } from 'sequelize-typescript';
 import { CreateCriteriaDto } from '../dto/createCriteriaDto';

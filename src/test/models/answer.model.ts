@@ -5,17 +5,12 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-  HasOne,
 } from 'sequelize-typescript';
 import { Question } from './question.model';
 import { CreateAnswerDto } from '../dto/createAnswerDto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Criteria } from './criteria.model';
-import {
-  HasOneCreateAssociationMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
-} from 'sequelize';
+
 
 @Table
 export class Answer extends Model<Answer, CreateAnswerDto> {

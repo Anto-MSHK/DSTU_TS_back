@@ -22,6 +22,8 @@ import { CreateCriteriaDto } from './dto/createCriteriaDto';
 import { Criteria } from './models/criteria.model';
 import { Roles } from 'src/user/role.decorator';
 import { Role } from 'src/user/models/user.model';
+import { UpdateQuestionDto } from './dto/updateQuestionDto';
+import { Answer } from './models/answer.model';
 
 @ApiTags('tests')
 @Controller('tests')
@@ -149,11 +151,41 @@ export class TestsController {
     description: 'Тест успешно обновлен',
     type: Test,
   })
-  async update(
+  async updateTest(
     @Param('id') id: number,
     @Body() data: CreateTestDto,
   ): Promise<Test> {
     return await this.testsService.updateTest(+id, data);
+  }
+
+  @Put('/question/:id')
+  @Roles(Role.Admin)
+  @ApiOperation({ summary: 'обновить вопрос по ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Вопрос успешно обновлен',
+    type: Question,
+  })
+  async updateQuestion(
+    @Param('id') id: number,
+    @Body() data: UpdateQuestionDto,
+  ): Promise<Question> {
+    return await this.testsService.updateQuestion(+id, data);
+  }
+
+  @Put('/answer/:id')
+  @Roles(Role.Admin)
+  @ApiOperation({ summary: 'обновить ответ по ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Ответ успешно обновлен',
+    type: Answer,
+  })
+  async updateAnswer(
+    @Param('id') id: number,
+    @Body() data: CreateAnswerDto,
+  ): Promise<Answer> {
+    return await this.testsService.updateAnswer(+id, data);
   }
 
   @Delete('/:testId/del-test')

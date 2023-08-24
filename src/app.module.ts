@@ -22,6 +22,8 @@ import { Criteria } from './test/models/criteria.model';
 import { Direction } from './direction/models/direction.model';
 import { Info } from './direction/models/info.model';
 import { Way } from './direction/models/way.model';
+import { NewsModule } from './news/news.module';
+import { News } from './news/news.model';
 
 dotenv.config();
 @Module({
@@ -49,6 +51,7 @@ dotenv.config();
         Direction,
         Info,
         Way,
+        News,
       ],
       dialectOptions: { ssl: true, native: true },
     }),
@@ -56,6 +59,7 @@ dotenv.config();
     PassportModule.register({ defaultStrategy: 'local' }),
     DirectionModule,
     TestModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -12,6 +12,7 @@ import { Criteria } from './models/criteria.model';
 import { Direction } from 'src/direction/models/direction.model';
 import { Role, User } from 'src/user/models/user.model';
 import { Results } from 'src/user/models/results.model';
+import { UpdateQuestionDto } from './dto/updateQuestionDto';
 
 @Injectable()
 export class TestsService {
@@ -200,9 +201,35 @@ export class TestsService {
 
   async updateTest(id: number, data: CreateTestDto): Promise<Test> {
     const test = await this.testModel.findOne({ where: { id } });
+    if (!test) throw new NotFoundException('Такого теста не существует!');
     await test.update({ ...data });
     await test.reload();
     return test;
+  }
+
+  async updateQuestion(id: number, data: UpdateQuestionDto): Promise<Question> {
+    const question = await this.questionModel.findOne({ where: { id } });
+    if (!question) throw new NotFoundException('Такого вопроса не существует!');
+    await question.update({ text: data.text });
+    await question.reload();
+    return question;
+  }
+
+  async updateAnswer(id: number, data: CreateAnswerDto): Promise<Answer> {
+    const answer = await this.answerModel.findOne({ where: { id } });
+    let criteria = undefined;
+    if (data.criteria) {
+      criteria = await this.criteriaModel.findOne({
+        where: { id: data.criteria },
+      });
+      if (!criteria)
+        throw new NotFoundException('Такой категории не существует!');
+    }
+
+    if (!answer) throw new NotFoundException('Такого ответа не существует!');
+    await answer.update({ criteria: data.criteria, text: data.text } as any);
+    await answer.reload();
+    return answer;
   }
 
   async deleteTest(id: number): Promise<number> {

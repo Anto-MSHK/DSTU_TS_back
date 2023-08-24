@@ -5,12 +5,10 @@ import {
   Request,
   Response,
   UseGuards,
-  Get,
-  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseDto } from './dto/response.dto';
 import { CreateUserDTO } from 'src/user/dto/createUser.dto';
 import { Public } from './auth.decorator';

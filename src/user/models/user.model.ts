@@ -30,6 +30,8 @@ import { Results } from './results.model';
 import { ResultsByCriteriaDTO } from '../dto/resultsByCriteria.dto';
 import { Direction } from 'src/direction/models/direction.model';
 import { CreateDirectionDto } from 'src/direction/dto/createDirectionDto';
+import { News } from 'src/news/news.model';
+import { CreateNewsDto } from 'src/news/dto/CreateNewsDto';
 
 export enum Role {
   User = 'user',
@@ -154,6 +156,15 @@ export class User extends Model<User, UserAttrs> {
   public removeDirection!: HasManyRemoveAssociationMixin<Direction, number>;
   public createDirection!: HasManyCreateAssociationMixin<Direction>;
   public countDirections!: HasManyCountAssociationsMixin;
+
+  @HasMany(() => News)
+  news: News[];
+  public getNewss!: HasManyGetAssociationsMixin<News>;
+  public addNews!: HasManyAddAssociationMixin<CreateNewsDto, number>;
+  public setNewss!: HasManySetAssociationsMixin<News, number>;
+  public removeNews!: HasManyRemoveAssociationMixin<News, number>;
+  public createNews!: HasManyCreateAssociationMixin<News>;
+  public countNewss!: HasManyCountAssociationsMixin;
 
   @HasOne(() => Identity)
   identity: Identity;
