@@ -10,7 +10,7 @@ import { Question } from './question.model';
 import { CreateAnswerDto } from '../dto/createAnswerDto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Criteria } from './criteria.model';
-
+import { MetaAnswerDto } from '../dto/metaAnswerDto';
 
 @Table
 export class Answer extends Model<Answer, CreateAnswerDto> {
@@ -34,6 +34,13 @@ export class Answer extends Model<Answer, CreateAnswerDto> {
     allowNull: false,
   })
   text: string;
+
+  @ApiProperty({
+    type: MetaAnswerDto,
+    description: 'Метаданные ответа',
+  })
+  @Column(DataType.JSONB)
+  meta: MetaAnswerDto;
 
   @ForeignKey(() => Question)
   @Column({

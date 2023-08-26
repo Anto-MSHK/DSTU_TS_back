@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { MetaAnswerDto } from './metaAnswerDto';
 
 export class CreateAnswerDto {
   @ApiProperty({
@@ -12,4 +13,10 @@ export class CreateAnswerDto {
     description: 'id критерия',
   })
   criteria: number;
+
+  @ApiProperty({
+    type: MetaAnswerDto,
+    description: 'Метаданные ответа',
+  })
+  meta: MetaAnswerDto;
 }

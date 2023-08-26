@@ -24,6 +24,7 @@ import { Criteria } from './criteria.model';
 import { CreateCriteriaDto } from '../dto/createCriteriaDto';
 import { Results } from 'src/user/models/results.model';
 import { ResultsByCriteriaDTO } from 'src/user/dto/resultsByCriteria.dto';
+import { InterpretationTestDto } from '../dto/interpretationTestDto';
 
 @Table
 export class Test extends Model<Test, CreateTestDto> {
@@ -52,6 +53,22 @@ export class Test extends Model<Test, CreateTestDto> {
     type: DataType.TEXT,
   })
   desc: string;
+
+  @ApiProperty({
+    description: 'формула для подсчёта результата теста',
+    example: ['g1', '-', 'g2', '+', '35'],
+  })
+  @Column({
+    type: DataType.ARRAY(DataType.TEXT),
+  })
+  formula: string[];
+
+  @ApiProperty({
+    type: [InterpretationTestDto],
+    description: 'интерпретация результатов',
+  })
+  @Column(DataType.JSONB)
+  interpretation: InterpretationTestDto[];
 
   @ApiProperty({
     description: 'вопросы теста',

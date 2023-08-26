@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { TestsService } from './test.service';
 import { Test } from './models/test.model';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateTestDto } from './dto/createTestDto';
 import { CreateQuestionDto } from './dto/createQuestionDto';
 import { CreateAnswerDto } from './dto/createAnswerDto';
@@ -24,6 +24,7 @@ import { Roles } from 'src/user/role.decorator';
 import { Role } from 'src/user/models/user.model';
 import { UpdateQuestionDto } from './dto/updateQuestionDto';
 import { Answer } from './models/answer.model';
+import { InterpretationTestDto } from './dto/interpretationTestDto';
 
 @ApiTags('tests')
 @Controller('tests')
@@ -39,6 +40,25 @@ export class TestsController {
     @Body() data: CreateTestDto,
   ): Promise<Way> {
     return await this.testsService.createTest(wayId, data);
+  }
+
+  @Put('/:testId/interpretation')
+  @Roles(Role.Admin)
+  @ApiOperation({ summary: 'добавление интерпретации тесту' })
+  @ApiBody({
+    description: 'массив интерпретаций',
+    type: [InterpretationTestDto],
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Интерпретация успешно добавлена',
+    type: Test,
+  })
+  async interpretationTest(
+    @Param('testId') testId: number,
+    @Body() data: InterpretationTestDto[],
+  ): Promise<Test> {
+    return await this.testsService.interpretationTest(testId, data);
   }
 
   @Post('/:testId/add-question')

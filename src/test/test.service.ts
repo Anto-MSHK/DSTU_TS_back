@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Test } from 'src/test/models/test.model';
 import { Question } from './models/question.model';
@@ -13,6 +17,7 @@ import { Direction } from 'src/direction/models/direction.model';
 import { Role, User } from 'src/user/models/user.model';
 import { Results } from 'src/user/models/results.model';
 import { UpdateQuestionDto } from './dto/updateQuestionDto';
+import { InterpretationTestDto } from './dto/interpretationTestDto';
 
 @Injectable()
 export class TestsService {
@@ -158,6 +163,28 @@ export class TestsService {
     return way;
   }
 
+  async interpretationTest(
+    testId: number,
+    data: InterpretationTestDto[],
+  ): Promise<Test> {
+    const test = await this.testModel.findOne({ where: { id: testId } });
+    if (!test) throw new NotFoundException('Теста не существует!');
+    if (
+      data.length > 0 &&
+      !data
+        .map((int) => int?.text && int?.value?.length > 0)
+        .find((el) => el === false)
+    ) {
+      test.interpretation = data;
+      await test.save();
+    } else
+      throw new BadRequestException(
+        'Что-то неправильно заполнено в интерпретациях!',
+      );
+    await test.reload();
+    return test;
+  }
+
   async createQuestion(testId: number, data: CreateQuestionDto): Promise<Test> {
     const test = await this.testModel.findOne({ where: { id: testId } });
     if (!test) throw new NotFoundException('Теста не существует!');
@@ -227,7 +254,11 @@ export class TestsService {
     }
 
     if (!answer) throw new NotFoundException('Такого ответа не существует!');
-    await answer.update({ criteria: data.criteria, text: data.text } as any);
+    await answer.update({
+      criteria: data.criteria,
+      text: data.text,
+      meta: data.meta,
+    } as any);
     await answer.reload();
     return answer;
   }

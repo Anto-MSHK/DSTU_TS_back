@@ -101,9 +101,13 @@ export class UsersService {
             const criteriaIndex = byCriteria.findIndex(
               (cr) => cr.criteriaId === curAnswer.criteria.id,
             );
-            if (criteriaIndex > -1) byCriteria[criteriaIndex].result += 1;
+            if (criteriaIndex > -1)
+              byCriteria[criteriaIndex].result += curAnswer?.meta?.weight || 1;
             else
-              byCriteria.push({ criteriaId: curAnswer.criteria.id, result: 1 });
+              byCriteria.push({
+                criteriaId: curAnswer.criteria.id,
+                result: curAnswer?.meta?.weight || 1,
+              });
           }
         });
       }),
@@ -149,8 +153,15 @@ export class UsersService {
   }
 
   async getResultsByTest(testId: number, userId: number) {
+    let byFormula = 0;
+    const groups: { group: string; count: number }[] = [];
+
     const results = await this.resultsRepo.findOne({
       where: { testId, userId },
+    });
+
+    const test = await this.testRepo.findOne({
+      where: { id: testId },
     });
 
     if (!results)
@@ -176,14 +187,53 @@ export class UsersService {
           });
           return {
             question: curQuestion,
-            answers: curQuestion.answers.map((aw) => ({
-              ...aw.dataValues,
-              isAnswer: log.answerIds.includes(aw.id) ? true : undefined,
-            })),
+            answers: curQuestion.answers.map((aw) => {
+              const curIndGroup = groups.findIndex(
+                (gr) => gr.group === aw.meta.group,
+              );
+              if (log.answerIds.includes(aw.id)) {
+                if (curIndGroup !== -1)
+                  groups[curIndGroup].count += aw?.meta?.weight || 1;
+                else
+                  groups.push({
+                    group: aw.meta.group,
+                    count: aw?.meta?.weight || 1,
+                  });
+              }
+              return {
+                ...aw.dataValues,
+                isAnswer: log.answerIds.includes(aw.id) ? true : undefined,
+              };
+            }),
           };
         }),
       );
 
-    return { criterias, logs };
+    let curSign = '';
+    if (test.formula?.length > 0)
+      test.formula.map((act) => {
+        if (act.includes('g')) {
+          const curGroupCount = groups.find(
+            (gr) => gr.group === act.replace('g', ''),
+          )?.count;
+          if (curGroupCount) {
+            if (curSign === '') byFormula = +curGroupCount;
+            else if (curSign === '+') byFormula += +curGroupCount;
+            else byFormula -= +curGroupCount;
+          }
+        } else if (act === '+') curSign = '+';
+        else if (act === '-') curSign = '-';
+        else {
+          if (curSign === '+') byFormula += +act;
+          else if (curSign === '-') byFormula -= +act;
+        }
+      });
+    return {
+      criterias,
+      logs,
+      byFormula,
+      groups,
+      interpretation: test.interpretation,
+    };
   }
 }
