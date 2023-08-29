@@ -243,7 +243,7 @@ export class UsersService {
         }
       });
 
-    const curInterpretation = test.interpretation.find((int) => {
+    const curInterpretation = test?.interpretation?.find((int) => {
       const curMin = +int.value[0] || 0;
       const curMax = +int.value[1] || Infinity;
       if (curMin <= +byFormula && +byFormula <= curMax) return true;
