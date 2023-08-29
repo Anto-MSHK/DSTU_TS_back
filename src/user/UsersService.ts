@@ -71,8 +71,6 @@ export class UsersService {
     if (!user || !test)
       throw new NotFoundException('Не найден пользователь или тест!');
 
-    const byCriteria: ResultsByCriteriaDTO[] = [];
-
     await Promise.all(
       data.map(async (log) => {
         const curQuestion = await this.questionRepo.findOne({
@@ -95,21 +93,6 @@ export class UsersService {
           throw new BadRequestException(
             'Обнаружены не существующие вопросы или ответы!',
           );
-
-        answers.map((curAnswer) => {
-          if (curAnswer.criteria) {
-            const criteriaIndex = byCriteria.findIndex(
-              (cr) => cr.criteriaId === curAnswer.criteria.id,
-            );
-            if (criteriaIndex > -1)
-              byCriteria[criteriaIndex].result += curAnswer?.meta?.weight || 1;
-            else
-              byCriteria.push({
-                criteriaId: curAnswer.criteria.id,
-                result: curAnswer?.meta?.weight || 1,
-              });
-          }
-        });
       }),
     );
 
@@ -118,14 +101,13 @@ export class UsersService {
     });
 
     if (resCandidate) {
-      await resCandidate.update({ byCriteria, answersLog: data });
+      await resCandidate.update({ answersLog: data });
       await resCandidate.reload();
       return resCandidate;
     } else {
       const results = await this.resultsRepo.create({
         userId,
         testId,
-        byCriteria,
         answersLog: data,
       });
       await results.reload();
@@ -155,6 +137,7 @@ export class UsersService {
   async getResultsByTest(testId: number, userId: number) {
     let byFormula = 0;
     const groups: { group: string; count: number }[] = [];
+    const byCriteria: ResultsByCriteriaDTO[] = [];
 
     const results = await this.resultsRepo.findOne({
       where: { testId, userId },
@@ -167,10 +150,41 @@ export class UsersService {
     if (!results)
       throw new NotFoundException('Вы ещё не отвечали на этот тест!');
 
+    await Promise.all(
+      results.answersLog.map(async (log) => {
+        let answers = await Promise.all(
+          log.answerIds.map(
+            async (answerId) =>
+              await this.answersRepo.findOne({
+                where: { id: answerId },
+                include: [{ model: Criteria, as: 'criteria' }],
+              }),
+          ),
+        );
+
+        answers = answers.filter((an) => an !== null);
+
+        answers.map((curAnswer) => {
+          if (curAnswer.criteria) {
+            const criteriaIndex = byCriteria.findIndex(
+              (cr) => cr.criteriaId === curAnswer.criteria.id,
+            );
+            if (criteriaIndex > -1)
+              byCriteria[criteriaIndex].result += curAnswer?.meta?.weight || 1;
+            else
+              byCriteria.push({
+                criteriaId: curAnswer.criteria.id,
+                result: curAnswer?.meta?.weight || 1,
+              });
+          }
+        });
+      }),
+    );
+
     let criterias = [];
-    if (results.byCriteria)
+    if (byCriteria)
       criterias = await Promise.all(
-        results.byCriteria.map(async (cr) => {
+        byCriteria.map(async (cr) => {
           const curCriteria = await this.criteriaRepo.findOne({
             where: { id: cr.criteriaId },
           });
@@ -228,12 +242,21 @@ export class UsersService {
           else if (curSign === '-') byFormula -= +act;
         }
       });
+
+    const curInterpretation = test.interpretation.find((int) => {
+      const curMin = +int.value[0] || 0;
+      const curMax = +int.value[1] || Infinity;
+      if (curMin <= +byFormula && +byFormula <= curMax) return true;
+      else return false;
+    });
+
     return {
       criterias,
       logs,
       byFormula,
       groups,
       interpretation: test.interpretation,
+      curInterpretation,
     };
   }
 }

@@ -29,13 +29,6 @@ export class Results extends Model<Results, ResultsAttrs> {
   id: number;
 
   @ApiProperty({
-    type: [ResultsByCriteriaDTO],
-    description: 'Результаты по критериям',
-  })
-  @Column(DataType.ARRAY(DataType.JSONB))
-  byCriteria: ResultsByCriteriaDTO[];
-
-  @ApiProperty({
     type: [AnswerLogDTO],
     description: 'Журнал ответов на тест',
   })

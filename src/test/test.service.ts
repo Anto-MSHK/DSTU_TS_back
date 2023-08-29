@@ -254,6 +254,9 @@ export class TestsService {
     }
 
     if (!answer) throw new NotFoundException('Такого ответа не существует!');
+
+    if (!data?.meta?.group) data.meta.group = `${criteria}`;
+
     await answer.update({
       criteria: data.criteria,
       text: data.text,
