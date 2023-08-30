@@ -203,14 +203,14 @@ export class UsersService {
             question: curQuestion,
             answers: curQuestion.answers.map((aw) => {
               const curIndGroup = groups.findIndex(
-                (gr) => gr.group === aw.meta.group,
+                (gr) => gr.group === aw?.meta?.group,
               );
-              if (log.answerIds.includes(aw.id)) {
+              if (log.answerIds.includes(aw.id) && aw?.meta) {
                 if (curIndGroup !== -1)
                   groups[curIndGroup].count += aw?.meta?.weight || 1;
-                else
+                else if (aw?.meta?.group)
                   groups.push({
-                    group: aw.meta.group,
+                    group: aw?.meta?.group,
                     count: aw?.meta?.weight || 1,
                   });
               }
