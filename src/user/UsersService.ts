@@ -147,39 +147,41 @@ export class UsersService {
       where: { id: testId },
     });
 
-    if (!results || !results.answersLog)
+    if (!results)
       throw new NotFoundException('Вы ещё не отвечали на этот тест!');
 
-    await Promise.all(
-      results.answersLog.map(async (log) => {
-        let answers = await Promise.all(
-          log.answerIds.map(
-            async (answerId) =>
-              await this.answersRepo.findOne({
-                where: { id: answerId },
-                include: [{ model: Criteria, as: 'criteria' }],
-              }),
-          ),
-        );
+    if (results?.answersLog)
+      await Promise.all(
+        results.answersLog.map(async (log) => {
+          let answers = await Promise.all(
+            log.answerIds.map(
+              async (answerId) =>
+                await this.answersRepo.findOne({
+                  where: { id: answerId },
+                  include: [{ model: Criteria, as: 'criteria' }],
+                }),
+            ),
+          );
 
-        answers = answers.filter((an) => an !== null);
+          answers = answers.filter((an) => an !== null);
 
-        answers.map((curAnswer) => {
-          if (curAnswer.criteria) {
-            const criteriaIndex = byCriteria.findIndex(
-              (cr) => cr.criteriaId === curAnswer.criteria.id,
-            );
-            if (criteriaIndex > -1)
-              byCriteria[criteriaIndex].result += curAnswer?.meta?.weight || 1;
-            else
-              byCriteria.push({
-                criteriaId: curAnswer.criteria.id,
-                result: curAnswer?.meta?.weight || 1,
-              });
-          }
-        });
-      }),
-    );
+          answers.map((curAnswer) => {
+            if (curAnswer.criteria) {
+              const criteriaIndex = byCriteria.findIndex(
+                (cr) => cr.criteriaId === curAnswer.criteria.id,
+              );
+              if (criteriaIndex > -1)
+                byCriteria[criteriaIndex].result +=
+                  curAnswer?.meta?.weight || 1;
+              else
+                byCriteria.push({
+                  criteriaId: curAnswer.criteria.id,
+                  result: curAnswer?.meta?.weight || 1,
+                });
+            }
+          });
+        }),
+      );
 
     let criterias = [];
     if (byCriteria)
