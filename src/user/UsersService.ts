@@ -147,7 +147,7 @@ export class UsersService {
       where: { id: testId },
     });
 
-    if (!results)
+    if (!results || !results.answersLog)
       throw new NotFoundException('Вы ещё не отвечали на этот тест!');
 
     await Promise.all(
