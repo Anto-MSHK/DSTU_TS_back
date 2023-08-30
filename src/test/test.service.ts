@@ -111,6 +111,7 @@ export class TestsService {
 
     const curTest = await this.testModel.findOne({
       where: { id },
+
       include: [
         {
           model: Question,
@@ -119,6 +120,7 @@ export class TestsService {
             {
               model: Answer,
               as: 'answers',
+              order: ['criteriaId', 'ASC'],
               include:
                 user.role === Role.Admin
                   ? [{ model: Criteria, as: 'criteria' }]
