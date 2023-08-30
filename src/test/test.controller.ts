@@ -129,6 +129,21 @@ export class TestsController {
     return this.testsService.findAll(wayId, req.user.id);
   }
 
+  @Get('/all')
+  @ApiOperation({
+    summary: 'получить список всех тестов',
+    description:
+      'Открытый запрос. Для всех зареганых. Отдаёт все существующие тесты',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Список тестов успешно получен',
+    type: [Test],
+  })
+  async findAllForUser(): Promise<Test[]> {
+    return this.testsService.findAllForUser();
+  }
+
   @Get('/:testId/criteria')
   @ApiOperation({
     summary: 'получить список всех критериев',

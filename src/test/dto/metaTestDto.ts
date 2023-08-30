@@ -6,14 +6,14 @@ export class DecryptGroupsDto {
     description: 'номер группы ответа',
     required: false,
   })
-  name: '1';
+  name: string;
 
   @ApiProperty({
     example: 'Настойчивость',
     description: 'расшифровка группы ответа',
     required: false,
   })
-  text: 'Настойчивость';
+  text: string;
 }
 
 export class MetaTestDto {

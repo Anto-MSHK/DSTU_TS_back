@@ -94,6 +94,12 @@ export class TestsService {
     }
   }
 
+  async findAllForUser(): Promise<Test[]> {
+    const tests = await this.testModel.findAll({});
+
+    return tests;
+  }
+
   async findAllCriteria(testId: number): Promise<Criteria[]> {
     return await this.criteriaModel.findAll({ where: { testId } });
   }
