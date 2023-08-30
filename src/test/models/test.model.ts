@@ -25,6 +25,7 @@ import { CreateCriteriaDto } from '../dto/createCriteriaDto';
 import { Results } from 'src/user/models/results.model';
 import { ResultsByCriteriaDTO } from 'src/user/dto/resultsByCriteria.dto';
 import { InterpretationTestDto } from '../dto/interpretationTestDto';
+import { MetaTestDto } from '../dto/metaTestDto';
 
 @Table
 export class Test extends Model<Test, CreateTestDto> {
@@ -69,6 +70,13 @@ export class Test extends Model<Test, CreateTestDto> {
   })
   @Column(DataType.JSONB)
   interpretation: InterpretationTestDto[];
+
+  @ApiProperty({
+    type: MetaTestDto,
+    description: 'Метаданные теста',
+  })
+  @Column(DataType.JSONB)
+  meta: MetaTestDto;
 
   @ApiProperty({
     description: 'вопросы теста',
