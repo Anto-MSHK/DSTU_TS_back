@@ -14,7 +14,9 @@ export class NewsService {
   ) {}
 
   async findAllNews(): Promise<News[]> {
-    return await this.newsModel.findAll();
+    return await this.newsModel.findAll({
+      order: [['updatedAt', 'DESC']],
+    });
   }
 
   async findNews(id: number): Promise<News> {
