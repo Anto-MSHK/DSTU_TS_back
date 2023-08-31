@@ -95,7 +95,14 @@ export class TestsService {
   }
 
   async findAllForUser(): Promise<Test[]> {
-    const tests = await this.testModel.findAll({});
+    const tests = await this.testModel.findAll({
+      include: [
+        {
+          model: Question,
+          as: 'questions',
+        },
+      ],
+    });
 
     return tests;
   }
